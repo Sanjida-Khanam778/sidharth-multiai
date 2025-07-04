@@ -5,7 +5,7 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 justify-between py-12 w-10/12 mx-auto">
             {/* Company Info */}
             <div className="md:col-span-1 justify-start">
-              <h3 className="text-xl font-bold mb-4">CurieCell AI Engine</h3>
+              <h3 className="text-xl md:text-3xl font-bold mb-4">CurieCell AI Engine</h3>
               <p className="text-blue-100 leading-relaxed">
               BioQuery AI is a smart research tool that delivers side-by-side answers from multiple AI engines for biomedical questions, with citations and visual support.              </p>
             </div>
@@ -24,8 +24,7 @@ const Footer = () => {
             <div className='justify-items-center'>
               <h4 className="font-semibold mb-4">Legal</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-blue-100 hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="text-blue-100 hover:text-white transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="text-blue-100 hover:text-white transition-colors">Register/SignUp</a></li>
               </ul>
             </div>
             
@@ -47,7 +46,7 @@ const Footer = () => {
             </div>
           </div>
           
-          <div className="border-t py-4 text-center">
+          <div className="border-t border-white border-opacity-40 py-4 text-center">
             <p className="text-blue-100">
               © 2025 CurieCell by Regios. All rights reserved.
             </p>
