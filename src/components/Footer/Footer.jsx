@@ -1,39 +1,36 @@
 const Footer = () => {
     return (
-      <footer className="bg-blue-600 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <footer className="bg-primary text-white ">
+        <div className="">
+          <div className="grid grid-cols-1 md:grid-cols-4 justify-between py-12 w-10/12 mx-auto">
             {/* Company Info */}
-            <div className="md:col-span-1">
+            <div className="md:col-span-1 justify-start">
               <h3 className="text-xl font-bold mb-4">CurieCell AI Engine</h3>
-              <p className="text-blue-100 text-sm leading-relaxed">
-                Advanced AI-powered research platform designed to accelerate biomedical discoveries through comprehensive multi-source intelligence.
-              </p>
+              <p className="text-blue-100 leading-relaxed">
+              BioQuery AI is a smart research tool that delivers side-by-side answers from multiple AI engines for biomedical questions, with citations and visual support.              </p>
             </div>
             
             {/* Navigation */}
-            <div>
+            <div className='justify-items-center'>
               <h4 className="font-semibold mb-4">Navigation</h4>
-              <ul className="space-y-2 text-sm">
+              <ul className="space-y-2">
                 <li><a href="#" className="text-blue-100 hover:text-white transition-colors">Home</a></li>
                 <li><a href="#" className="text-blue-100 hover:text-white transition-colors">Features</a></li>
                 <li><a href="#" className="text-blue-100 hover:text-white transition-colors">About</a></li>
-                <li><a href="#" className="text-blue-100 hover:text-white transition-colors">Contact</a></li>
               </ul>
             </div>
             
             {/* Legal */}
-            <div>
+            <div className='justify-items-center'>
               <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm">
+              <ul className="space-y-2">
                 <li><a href="#" className="text-blue-100 hover:text-white transition-colors">Privacy Policy</a></li>
                 <li><a href="#" className="text-blue-100 hover:text-white transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="text-blue-100 hover:text-white transition-colors">Cookie Policy</a></li>
               </ul>
             </div>
             
             {/* Social Links */}
-            <div>
+            <div className='justify-items-end'>
               <h4 className="font-semibold mb-4">Social Link</h4>
               <div className="flex space-x-4">
                 <a href="#" className="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-colors">
@@ -50,9 +47,9 @@ const Footer = () => {
             </div>
           </div>
           
-          <div className="border-t border-blue-500 mt-8 pt-8 text-center">
-            <p className="text-blue-100 text-sm">
-              © 2024 CurieCell by Regios. All rights reserved.
+          <div className="border-t py-4 text-center">
+            <p className="text-blue-100">
+              © 2025 CurieCell by Regios. All rights reserved.
             </p>
           </div>
         </div>
