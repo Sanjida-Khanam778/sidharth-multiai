@@ -4,7 +4,14 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        Poly: ["Poly", "serif"],
+        manrope: ["Manrope", "serif"],
+      },
+      colors: {
+        'primary': '#3B82F6',
+        'curie-green': '#28a745',
+        'curie-red': '#dc3545',
+        'curie-yellow': '#ffc107',
+        'curie-purple': '#6f42c1',
       },
     },
   },
