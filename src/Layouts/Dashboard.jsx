@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebar/Sidebar";
+import profile from "../assets/images/profile.png";
 
 export default function Dashboard() {
   const [currentChat, setCurrentChat] = useState("");
@@ -25,89 +26,91 @@ export default function Dashboard() {
       "Top expressed genes in liver tissues",
     ],
   };
+  // {
+  //   type: "user",
+  //   content: "What proteins are involved in Alzheimer's disease?",
+  // }
 
-  const chatMessages = [
-    {
-      type: "user",
-      content: "What proteins are involved in Alzheimer's disease?",
-    },
-    {
-      type: "assistant",
-      content: {
-        sources: [
-          {
-            name: "Casually",
-            data: {
-              role: "Forms sticky plaques outside neurons.",
-              pathology:
-                "Misfolded Aβ peptides accumulate to form amyloid plaques.",
-              source:
-                "Produced from the cleavage of amyloid precursor protein (APP)",
-            },
-          },
-          {
-            name: "Xolain Data",
-            data: {
-              role: "Forms sticky plaques outside neurons.",
-              pathology:
-                "Misfolded Aβ peptides accumulate to form amyloid plaques.",
-              source:
-                "Produced from the cleavage of amyloid precursor protein (APP)",
-            },
-          },
-          {
-            name: "VELDT",
-            data: {
-              role: "Forms sticky plaques outside neurons.",
-              pathology:
-                "Misfolded Aβ peptides accumulate to form amyloid plaques.",
-            },
-          },
-          {
-            name: "JDCT",
-            data: {
-              role: "Forms sticky plaques outside neurons.",
-              pathology:
-                "Misfolded Aβ peptides accumulate to form amyloid plaques.",
-            },
-          },
-          {
-            name: "ChatGPT",
-            data: {
-              role: "Forms sticky plaques outside neurons.",
-              source:
-                "Produced from the cleavage of amyloid precursor protein (APP)",
-              source2:
-                "Produced from the cleavage of amyloid precursor protein (APP)",
-            },
-          },
-          {
-            name: "Gemini",
-            data: {
-              role: "Forms sticky plaques outside neurons.",
-              pathology:
-                "Misfolded Aβ peptides accumulate to form amyloid plaques.",
-            },
-          },
-          {
-            name: "Gemini by Anthropic",
-            data: {
-              role: "Forms sticky plaques outside neurons.",
-              pathology:
-                "Misfolded Aβ peptides accumulate to form amyloid plaques.",
-              source:
-                "Produced from the cleavage of amyloid precursor protein (APP)",
-            },
-          },
-        ],
-      },
-    },
-  ];
+  const [chatMessages, setChatMessages] = useState([]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (message.trim()) {
-      console.log("Sending message:", message);
+      setChatMessages((prev) => [
+        ...prev,
+        { type: "user", content: message },
+        {
+          type: "assistant",
+          content: {
+            sources: [
+              {
+                name: "Casually",
+                data: {
+                  role: "Forms sticky plaques outside neurons.",
+                  pathology:
+                    "Misfolded Aβ peptides accumulate to form amyloid plaques.",
+                  source:
+                    "Produced from the cleavage of amyloid precursor protein (APP)",
+                },
+              },
+              {
+                name: "Xolain Data",
+                data: {
+                  role: "Forms sticky plaques outside neurons.",
+                  pathology:
+                    "Misfolded Aβ peptides accumulate to form amyloid plaques.",
+                  source:
+                    "Produced from the cleavage of amyloid precursor protein (APP)",
+                },
+              },
+              {
+                name: "VELDT",
+                data: {
+                  role: "Forms sticky plaques outside neurons.",
+                  pathology:
+                    "Misfolded Aβ peptides accumulate to form amyloid plaques.",
+                },
+              },
+              {
+                name: "JDCT",
+                data: {
+                  role: "Forms sticky plaques outside neurons.",
+                  pathology:
+                    "Misfolded Aβ peptides accumulate to form amyloid plaques.",
+                },
+              },
+              {
+                name: "ChatGPT",
+                data: {
+                  role: "Forms sticky plaques outside neurons.",
+                  source:
+                    "Produced from the cleavage of amyloid precursor protein (APP)",
+                  source2:
+                    "Produced from the cleavage of amyloid precursor protein (APP)",
+                },
+              },
+              {
+                name: "Gemini",
+                data: {
+                  role: "Forms sticky plaques outside neurons.",
+                  pathology:
+                    "Misfolded Aβ peptides accumulate to form amyloid plaques.",
+                },
+              },
+              {
+                name: "Gemini by Anthropic",
+                data: {
+                  role: "Forms sticky plaques outside neurons.",
+                  pathology:
+                    "Misfolded Aβ peptides accumulate to form amyloid plaques.",
+                  source:
+                    "Produced from the cleavage of amyloid precursor protein (APP)",
+                },
+              },
+            ],
+          },
+        },
+      ]);
       setMessage("");
     }
   };
@@ -136,7 +139,9 @@ export default function Dashboard() {
                   <div className="bg-gray-800 text-white px-4 py-2 rounded-2xl max-w-md">
                     {msg.content}
                   </div>
-                  <div className="w-8 h-8 bg-gray-300 rounded-full ml-3 flex-shrink-0"></div>
+                  <div className=" w-8 h-8 my-auto rounded-full ml-3">
+                    <img src={profile} alt="profile" className="w-full h-full rounded-full" />
+                  </div>
                 </div>
               ) : (
                 <div className="flex items-start space-x-3 mb-6">
@@ -207,21 +212,7 @@ export default function Dashboard() {
                 placeholder="Enter your biomedical query here..."
                 className="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
-                  />
-                </svg>
-              </div>
+    
             </div>
             <button
               type="submit"

@@ -3,7 +3,7 @@ import logo from "../../assets/images/logo.png";
 import { Link } from "react-router-dom";
 const Navbar = () => {
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-100 py-3 sticky top-0 z-50">
+    <nav className="bg-white shadow-sm border-b border-gray-100 py-3 fixed w-full top-0 z-50">
       <div className="w-10/12 mx-auto">
         <div className="flex justify-between items-center">
           {/* Logo */}
@@ -23,7 +23,7 @@ const Navbar = () => {
                 Home
               </a>
               <a
-                href="#"
+                href="#features"
                 className="text-gray-700 hover:text-primary px-3 py-2 font-medium transition-colors duration-200"
               >
                 Features
