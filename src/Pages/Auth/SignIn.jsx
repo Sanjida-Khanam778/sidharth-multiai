@@ -1,6 +1,7 @@
 import { useState } from "react";
 import logo from "../../assets/images/logo.png";
 import robot from "../../assets/images/robot.png";
+import { Link } from "react-router-dom";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,18 +15,20 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="h-screen flex">
+    <div className="h-screen flex font-manrope  ">
       {/* Left Side - Sign In Form */}
-      <div className="mb-8 p-8 absolute">
+    <Link to="/">
+    <div className="mb-8 p-8 absolute">
         <img src={logo} alt="logo" className="w-32 md:w-48 lg:w-64" />
       </div>
+    </Link>
       <div className="w-1/2 bg-white p-8 flex flex-col border justify-center">
         <div className="w-full max-w-sm mx-auto">
           {/* Logo */}
 
           {/* Sign In Header */}
           <div className="mb-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+            <h2 className="text-4xl font-bold text-gray-900 mb-2">
               Sign in
             </h2>
             <p className="text-sm text-gray-600">
