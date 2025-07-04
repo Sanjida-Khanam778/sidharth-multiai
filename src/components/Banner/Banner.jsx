@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
  
 export default function Banner() {
   return (
@@ -22,9 +23,11 @@ export default function Banner() {
           </p>
  
           <div className="flex gap-5 mt-10 justify-center items-center w-full absolute bottom-20">
+            <Link to="/dashboard">
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-semibold text-xl border-2 py-3 px-16 rounded-lg">
               Get Started
             </button>
+            </Link>
             <button className="bg-transparent hover:bg-blue-700 hover:text-white font-semibold text-xl border-2 py-3 px-16 rounded-lg">
               How it work
             </button>

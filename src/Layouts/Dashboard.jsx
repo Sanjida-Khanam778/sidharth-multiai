@@ -1,7 +1,249 @@
-import React from 'react'
+import { useState } from "react";
+import Sidebar from "../components/Sidebar/Sidebar";
 
 export default function Dashboard() {
+  const [currentChat, setCurrentChat] = useState("");
+  const [message, setMessage] = useState("");
+
+  const chatHistory = {
+    Today: [
+      "Proteins in Alzheimer's Disease",
+      "Best biomarkers for lung cancer",
+      "Target discovery for glioblastoma treatment",
+      "Top expressed genes in liver tissues",
+    ],
+    Yesterday: [
+      "Proteins in Alzheimer's Disease",
+      "Best biomarkers for lung cancer",
+      "Target discovery for glioblastoma treatment",
+      "Top expressed genes in liver tissues",
+    ],
+    "Last Week": [
+      "Proteins in Alzheimer's Disease",
+      "Best biomarkers for lung cancer",
+      "Target discovery for glioblastoma treatment",
+      "Top expressed genes in liver tissues",
+    ],
+  };
+
+  const chatMessages = [
+    {
+      type: "user",
+      content: "What proteins are involved in Alzheimer's disease?",
+    },
+    {
+      type: "assistant",
+      content: {
+        sources: [
+          {
+            name: "Casually",
+            data: {
+              role: "Forms sticky plaques outside neurons.",
+              pathology:
+                "Misfolded Aβ peptides accumulate to form amyloid plaques.",
+              source:
+                "Produced from the cleavage of amyloid precursor protein (APP)",
+            },
+          },
+          {
+            name: "Xolain Data",
+            data: {
+              role: "Forms sticky plaques outside neurons.",
+              pathology:
+                "Misfolded Aβ peptides accumulate to form amyloid plaques.",
+              source:
+                "Produced from the cleavage of amyloid precursor protein (APP)",
+            },
+          },
+          {
+            name: "VELDT",
+            data: {
+              role: "Forms sticky plaques outside neurons.",
+              pathology:
+                "Misfolded Aβ peptides accumulate to form amyloid plaques.",
+            },
+          },
+          {
+            name: "JDCT",
+            data: {
+              role: "Forms sticky plaques outside neurons.",
+              pathology:
+                "Misfolded Aβ peptides accumulate to form amyloid plaques.",
+            },
+          },
+          {
+            name: "ChatGPT",
+            data: {
+              role: "Forms sticky plaques outside neurons.",
+              source:
+                "Produced from the cleavage of amyloid precursor protein (APP)",
+              source2:
+                "Produced from the cleavage of amyloid precursor protein (APP)",
+            },
+          },
+          {
+            name: "Gemini",
+            data: {
+              role: "Forms sticky plaques outside neurons.",
+              pathology:
+                "Misfolded Aβ peptides accumulate to form amyloid plaques.",
+            },
+          },
+          {
+            name: "Gemini by Anthropic",
+            data: {
+              role: "Forms sticky plaques outside neurons.",
+              pathology:
+                "Misfolded Aβ peptides accumulate to form amyloid plaques.",
+              source:
+                "Produced from the cleavage of amyloid precursor protein (APP)",
+            },
+          },
+        ],
+      },
+    },
+  ];
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (message.trim()) {
+      console.log("Sending message:", message);
+      setMessage("");
+    }
+  };
+
+  const handleNewChat = () => {
+    console.log("Starting new chat");
+  };
+
   return (
-    <div>Dashboard</div>
-  )
+    <div className="flex h-[89vh] bg-gray-50">
+      {/* Sidebar */}
+      <Sidebar
+        chatHistory={chatHistory}
+        handleNewChat={handleNewChat}
+        setCurrentChat={setCurrentChat}
+      />
+
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Chat Messages */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {chatMessages.map((msg, index) => (
+            <div key={index}>
+              {msg.type === "user" ? (
+                <div className="flex justify-end mb-4">
+                  <div className="bg-gray-800 text-white px-4 py-2 rounded-2xl max-w-md">
+                    {msg.content}
+                  </div>
+                  <div className="w-8 h-8 bg-gray-300 rounded-full ml-3 flex-shrink-0"></div>
+                </div>
+              ) : (
+                <div className="flex items-start space-x-3 mb-6">
+                  <div className="w-8 h-8 bg-gray-800 rounded-full flex-shrink-0 flex items-center justify-center">
+                    <div className="w-4 h-4 bg-white rounded-sm"></div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                      {msg.content.sources.map((source, sourceIndex) => (
+                        <div
+                          key={sourceIndex}
+                          className={`p-4 ${
+                            sourceIndex !== msg.content.sources.length - 1
+                              ? ""
+                              : ""
+                          }`}
+                        >
+                          <div className="font-semibold text-gray-900 mb-2">
+                            {source.name}
+                          </div>
+                          <div className="space-y-2 text-sm text-gray-700">
+                            {source.data.role && (
+                              <div>
+                                <span className="font-medium">Role:</span>{" "}
+                                {source.data.role}
+                              </div>
+                            )}
+                            {source.data.pathology && (
+                              <div>
+                                <span className="font-medium">Pathology:</span>{" "}
+                                {source.data.pathology}
+                              </div>
+                            )}
+                            {source.data.source && (
+                              <div>
+                                <span className="font-medium">Source:</span>{" "}
+                                {source.data.source}
+                              </div>
+                            )}
+                            {source.data.source2 && (
+                              <div>
+                                <span className="font-medium">Source:</span>{" "}
+                                {source.data.source2}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Message Input */}
+        <div className="border-t border-gray-200 p-4">
+          <form
+            onSubmit={handleSendMessage}
+            className="flex items-center space-x-3"
+          >
+            <div className="flex-1 relative">
+              <input
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Enter your biomedical query here..."
+                className="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <svg
+                  className="w-5 h-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                  />
+                </svg>
+              </div>
+            </div>
+            <button
+              type="submit"
+              className="bg-gray-800 hover:bg-gray-900 text-white p-3 rounded-full transition-colors"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                />
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 }
