@@ -23,43 +23,44 @@ export default function ForgetPass() {
         </div>
       </Link>
       <div className="w-1/2 bg-white p-8 flex flex-col border justify-center">
-      <div className="max-w-lg mx-auto">
-      <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Forget your password
-          </h1>
-          <p className="text-gray-600">
-            Enter your email address and we'll send you a verification code.
-          </p>
-        </div>
-
-        <form className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              E-mail
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@gmail.com"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            />
+        <div className="max-w-lg mx-auto">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              Forget your password
+            </h1>
+            <p className="text-gray-600">
+              Enter your email address and we'll send you a verification code.
+            </p>
           </div>
 
-          <button
-            type="submit"
-            onClick={() => onNavigate("verify")}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-          >
-            Send OTP
-          </button>
-        </form>
-      </div>
+          <form className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                E-mail
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="example@gmail.com"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+              />
+            </div>
+
+            <Link to="/verify-otp">
+              <button
+                type="submit"
+                className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary transition-colors mt-4"
+              >
+                Send OTP
+              </button>
+            </Link>
+          </form>
+        </div>
       </div>
 
       {/* Right Side - Robot Illustration */}
-      <div className="w-1/2 bg-gradient-to-br from-blue-400 to-primary flex items-center justify-center relative overflow-hidden">
+      <div className="w-1/2 bg-gradient-to-br from-primary to-primary flex items-center justify-center relative overflow-hidden">
         <div className="relative"></div>
         <div className="">
           <img src={robot} alt="robot" className="w-full h-full object-cover" />

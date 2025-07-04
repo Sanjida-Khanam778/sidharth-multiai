@@ -5,6 +5,7 @@ import SignUp from "../Pages/Auth/SignUp";
 import Home from "../Pages/Home/Home";
 import Features from "../components/Features/Features";
 import ForgetPass from "../components/ForgetPass/ForgetPass";
+import VarifyOTP from "../components/VarifyOTP/VarifyOTP";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
   {
     path: "/forget-password",
     element: <ForgetPass />,
+  },
+  {
+    path: "/verify-otp",
+    element: <VarifyOTP />,
   },
 
 ]);
