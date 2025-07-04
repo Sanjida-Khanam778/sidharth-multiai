@@ -6,8 +6,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -15,8 +14,7 @@ export default function SignUp() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Sign up attempted with:", {
-      firstName,
-      lastName,
+      fullName,
       email,
       password,
       rememberMe,
@@ -35,26 +33,23 @@ export default function SignUp() {
         <div className="w-10/12 mx-auto">
           {/* Logo */}
 
-          <div className="mb-8">
+          <div className="mb-6">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Welcome to BioQuery AI
             </h1>
             <p className="text-gray-600">
               Already have an account?
-              <button
-                onClick={() => onNavigate("signin")}
-                className="text-blue-600 hover:text-blue-700 font-medium ml-1"
-              >
+              <Link to="/login" className="text-primary hover:text-primary font-medium ml-1">
                 Sign In
-              </button>
+              </Link>
             </p>
           </div>
 
           <div className="mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">
               Create your account
             </h2>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 ">
               Please enter your details to get started
             </p>
           </div>
@@ -88,26 +83,26 @@ export default function SignUp() {
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
             </div>
-            <div className="relative flex justify-center text-sm">
+            <div className="relative flex justify-center ">
               <span className="px-2 bg-white text-gray-500">OR</span>
             </div>
           </div>
 
           {/* Form */}
           <form className="space-y-4" onSubmit={handleSubmit}>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block  font-medium text-gray-700">
               Full Name
             </label>
             <input
               type="text"
-              value={firstName}
+              value={fullName}
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="John Doe"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block  font-medium text-gray-700 mb-2">
                 E-mail
               </label>
               <input
@@ -120,7 +115,7 @@ export default function SignUp() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block  font-medium text-gray-700 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -146,14 +141,14 @@ export default function SignUp() {
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-blue-500"
               />
-              <span className="ml-2 text-sm text-gray-600">Remember me</span>
+              <span className="ml-2  text-gray-600">Remember me</span>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary transition-colors"
             >
               Register
             </button>

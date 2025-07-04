@@ -17,35 +17,33 @@ export default function SignInForm() {
   return (
     <div className="h-screen flex font-manrope  ">
       {/* Left Side - Sign In Form */}
-    <Link to="/">
-    <div className="mb-8 p-8 absolute">
-        <img src={logo} alt="logo" className="w-32 md:w-48 lg:w-64" />
-      </div>
-    </Link>
+      <Link to="/">
+        <div className="mb-8 p-8 absolute">
+          <img src={logo} alt="logo" className="w-32 md:w-48 lg:w-64" />
+        </div>
+      </Link>
       <div className="w-1/2 bg-white p-8 flex flex-col border justify-center">
-        <div className="w-full max-w-sm mx-auto">
+        <div className="w-10/12 mx-auto">
           {/* Logo */}
 
           {/* Sign In Header */}
-          <div className="mb-6">
-            <h2 className="text-4xl font-bold text-gray-900 mb-2">
-              Sign in
-            </h2>
-            <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
-              <a href="#" className="text-primary hover:underline">
+          <div className="mb-8">
+            <h2 className="text-5xl font-bold text-gray-900 mb-8">Sign in</h2>
+            <p className=" text-gray-600 mb-4">
+              Don't have an account?
+              <Link to="/register" className="text-primary underline ml-1">
                 Create Now
-              </a>
+              </Link>
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block  font-medium text-gray-700 mb-1"
               >
                 Email
               </label>
@@ -64,7 +62,7 @@ export default function SignInForm() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block  font-medium text-gray-700 mb-1"
               >
                 Password
               </label>
@@ -120,14 +118,14 @@ export default function SignInForm() {
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-700"
+                  className="ml-2 block  text-gray-700"
                 >
                   Remember me
                 </label>
               </div>
-              <a href="#" className="text-sm text-primary hover:underline">
+              <Link to="/forget-password" className=" text-primary hover:underline">
                 Forgot Password?
-              </a>
+              </Link>
             </div>
 
             {/* Sign In Button */}

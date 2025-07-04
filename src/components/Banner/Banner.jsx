@@ -2,7 +2,7 @@ import React from "react";
  
 export default function Banner() {
   return (
-    <div className="h-[80vh] w-full mx-auto grid grid-cols-12 bg-[#F9FAFB] relative">
+    <div className="h-screen w-full mx-auto grid grid-cols-12 bg-[#F9FAFB] relative">
       <div className="col-span-7"></div>
       <div className="relative col-span-5 overflow-hidden w-full">
         {/* <div className="bg-blue-500 h-96 w-[1000px] absolute top-[0%] rotate-45"></div> */}

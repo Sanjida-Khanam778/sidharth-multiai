@@ -4,6 +4,7 @@ import SignIn from "../Pages/Auth/SignIn";
 import SignUp from "../Pages/Auth/SignUp";
 import Home from "../Pages/Home/Home";
 import Features from "../components/Features/Features";
+import ForgetPass from "../components/ForgetPass/ForgetPass";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ export const router = createBrowserRouter([
   {
     path: "/register",
     element: <SignUp />,
+  },
+  {
+    path: "/forget-password",
+    element: <ForgetPass />,
   },
 
 ]);
