@@ -1,5 +1,6 @@
 import React from 'react';
 import logo from '../../assets/images/logo.png'
+import { Link } from 'react-router-dom';
 const Navbar = () => {
   return (
     <nav className="bg-white shadow-sm border-b border-gray-100 py-3">
@@ -30,12 +31,16 @@ const Navbar = () => {
 
           {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
+            <Link to="/login">
             <button className="text-gray-700 hover:text-primary px-4 py-2 font-semibold transition-colors duration-200">
               Sign In
             </button>
+            </Link>
+            <Link to="/register">
             <button className="bg-primary text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200 shadow-sm">
               Sign up
             </button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}

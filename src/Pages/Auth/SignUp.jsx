@@ -1,3 +1,6 @@
+import { useState } from "react";
+import logo from '../../assets/images/logo.png'
+
 const SignUp = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -7,8 +10,8 @@ const SignUp = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
   return (
-    <AuthLayout>
-      <Logo />
+    <div>
+      <img src={logo} alt="logo" className='w-32 md:w-48 lg:w-64' />
       
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to BioQuery AI</h1>
@@ -128,7 +131,7 @@ const SignUp = () => {
           Register
         </button>
       </form>
-    </AuthLayout>
+    </div>
   );
 };
 
