@@ -5,8 +5,8 @@ const About = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center justify-between">
             {/* Left Column - Headline */}
             <div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                The World's Most Comprehensive AI insights for Research <br /> and Development
+              <h1 className="text-4xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-relaxed tracking-wide">
+                The World's Most Comprehensive AI <br /> insights for Research <br /> and Development
               </h1>
             </div>
   

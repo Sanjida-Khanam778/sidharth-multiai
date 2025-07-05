@@ -19,20 +19,33 @@ export default function ResetPass() {
   };
 
   return (
-    <div className="h-screen flex font-manrope  ">
-      {/* Left Side - Reset Password Form */}
-      <Link to="/">
-        <div className="mb-8 p-8 absolute">
-          <img src={logo} alt="logo" className="w-32 md:w-48 lg:w-64" />
+    <div className="min-h-screen flex flex-col lg:flex-row font-manrope">
+      {/* Logo - Mobile */}
+      <Link to="/" className="absolute top-4 left-4">
+        <div className="p-4 lg:p-8">
+          <img src={logo} alt="logo" className="w-24 sm:w-32 md:w-40 lg:w-48" />
         </div>
       </Link>
-      <div className="w-1/2 bg-white p-8 flex flex-col border justify-center">
-        <div className="w-1/2 mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+
+      {/* Robot Image - Mobile (below navbar) */}
+      <div className="lg:hidden bg-gradient-to-br from-primary to-primary h-64 sm:h-80 flex items-center justify-center relative overflow-hidden">
+        <div className="h-80 sm:h-96">
+          <img src={robot} alt="robot" className="w-full h-full object-cover" />
+        </div>
+        {/* Background Decorative Elements */}
+        <div className="absolute top-8 left-8 w-4 h-4 bg-white bg-opacity-20 rounded-full"></div>
+        <div className="absolute bottom-16 right-8 w-6 h-6 bg-white bg-opacity-15 rounded-full"></div>
+        <div className="absolute top-1/3 right-16 w-3 h-3 bg-white bg-opacity-25 rounded-full"></div>
+      </div>
+
+      {/* Left Side - Reset Password Form */}
+      <div className="flex-1 lg:w-1/2 bg-white p-4 sm:p-6 lg:p-8 flex flex-col justify-center">
+        <div className="w-full max-w-md mx-auto">
+          <div className="mb-6 lg:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
               Reset password
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-600 text-sm sm:text-base">
               Create a new password for your account
             </p>
           </div>
@@ -48,7 +61,7 @@ export default function ResetPass() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none pr-12"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none pr-12 text-sm sm:text-base"
                 />
                 <button
                   type="button"
@@ -74,7 +87,7 @@ export default function ResetPass() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none pr-12"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none pr-12 text-sm sm:text-base"
                 />
                 <button
                   type="button"
@@ -90,17 +103,19 @@ export default function ResetPass() {
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary transition-colors"
-            >
-              Update Password
-            </button>
+            <Link to="/success-msg">
+              <button
+                type="submit"
+                className="w-full bg-primary text-white py-3 mt-4 rounded-lg font-medium hover:bg-primary transition-colors text-sm sm:text-base"
+              >
+                Update Password
+              </button>
+            </Link>
 
             <div className="text-center">
               <Link
                 to="/login"
-                className="text-primary hover:text-primary text-sm"
+                className="text-primary hover:text-primary text-sm sm:text-base"
               >
                 Back to Sign In
               </Link>
@@ -109,8 +124,8 @@ export default function ResetPass() {
         </div>
       </div>
 
-      {/* Right Side - Robot Illustration */}
-      <div className="w-1/2 bg-gradient-to-br from-primary to-primary flex items-center justify-center relative overflow-hidden">
+      {/* Right Side - Robot Illustration - Desktop Only */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-primary items-center justify-center relative overflow-hidden">
         <div className="relative"></div>
         <div className="">
           <img src={robot} alt="robot" className="w-full h-full object-cover" />

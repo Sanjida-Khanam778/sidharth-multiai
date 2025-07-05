@@ -15,21 +15,34 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="h-screen flex font-manrope  ">
-      {/* Left Side - Sign In Form */}
-      <Link to="/">
-        <div className="mb-8 p-8 absolute">
-          <img src={logo} alt="logo" className="w-32 md:w-48 lg:w-64" />
+    <div className="min-h-screen flex flex-col lg:flex-row font-manrope">
+      {/* Logo - Mobile */}
+      <Link to="/" className="absolute top-4 left-4">
+        <div className="p-4 lg:p-8">
+          <img src={logo} alt="logo" className="w-24 sm:w-32 md:w-40 lg:w-48" />
         </div>
       </Link>
-      <div className="w-1/2 bg-white p-8 flex flex-col border justify-center">
-        <div className="w-10/12 mx-auto">
-          {/* Logo */}
 
+      {/* Robot Image - Mobile (below navbar) */}
+      <div className="lg:hidden bg-gradient-to-br from-blue-400 to-primary h-64 sm:h-80 flex items-center justify-center relative overflow-hidden">
+        <div className="h-80 sm:h-96">
+          <img src={robot} alt="robot" className="w-full h-full object-cover" />
+        </div>
+        {/* Background Decorative Elements */}
+        <div className="absolute top-8 left-8 w-4 h-4 bg-white bg-opacity-20 rounded-full"></div>
+        <div className="absolute bottom-16 right-8 w-6 h-6 bg-white bg-opacity-15 rounded-full"></div>
+        <div className="absolute top-1/3 right-16 w-3 h-3 bg-white bg-opacity-25 rounded-full"></div>
+      </div>
+
+      {/* Left Side - Sign In Form */}
+      <div className="flex-1 lg:w-1/2 bg-white p-4 sm:p-6 my-10 md:my-0 justify-center flex flex-col">
+        <div className="w-full max-w-md mx-auto">
           {/* Sign In Header */}
-          <div className="mb-8">
-            <h2 className="text-5xl font-bold text-gray-900 mb-8">Sign in</h2>
-            <p className=" text-gray-600 mb-4">
+          <div className="mb-6 xl:mb-8">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Sign in
+            </h2>
+            <p className="text-gray-600 text-sm sm:text-base">
               Don't have an account?
               <Link to="/register" className="text-primary underline ml-1">
                 Create Now
@@ -38,12 +51,12 @@ export default function SignInForm() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-6">
             {/* Email Field */}
             <div>
               <label
                 htmlFor="email"
-                className="block  font-medium text-gray-700 mb-1"
+                className="block font-medium text-gray-700 mb-1 text-sm sm:text-base"
               >
                 Email
               </label>
@@ -53,7 +66,7 @@ export default function SignInForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="example@gmail.com"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full px-3 py-2 sm:py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm sm:text-base"
                 required
               />
             </div>
@@ -62,7 +75,7 @@ export default function SignInForm() {
             <div>
               <label
                 htmlFor="password"
-                className="block  font-medium text-gray-700 mb-1"
+                className="block font-medium text-gray-700 mb-1 text-sm sm:text-base"
               >
                 Password
               </label>
@@ -72,7 +85,7 @@ export default function SignInForm() {
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent pr-10"
+                  className="w-full px-3 py-2 sm:py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent pr-10 text-sm sm:text-base"
                   required
                 />
                 <button
@@ -107,7 +120,7 @@ export default function SignInForm() {
             </div>
 
             {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
               <div className="flex items-center">
                 <input
                   id="remember-me"
@@ -118,12 +131,15 @@ export default function SignInForm() {
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 block  text-gray-700"
+                  className="ml-2 block text-gray-700 text-sm sm:text-base"
                 >
                   Remember me
                 </label>
               </div>
-              <Link to="/forget-password" className=" text-primary hover:underline">
+              <Link
+                to="/forget-password"
+                className="text-primary hover:underline text-sm sm:text-base"
+              >
                 Forgot Password?
               </Link>
             </div>
@@ -131,7 +147,7 @@ export default function SignInForm() {
             {/* Sign In Button */}
             <button
               type="submit"
-              className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition duration-200"
+              className="w-full bg-primary text-white py-2 sm:py-3 px-4 rounded-md hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition duration-200 text-sm sm:text-base font-medium"
             >
               Sign in
             </button>
@@ -139,7 +155,7 @@ export default function SignInForm() {
             {/* Google Sign In */}
             <button
               type="button"
-              className="w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition duration-200 flex items-center justify-center space-x-2"
+              className="w-full bg-white border border-gray-300 text-gray-700 py-2 sm:py-3 px-4 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -165,8 +181,8 @@ export default function SignInForm() {
         </div>
       </div>
 
-      {/* Right Side - Robot Illustration */}
-      <div className="w-1/2 bg-gradient-to-br from-blue-400 to-primary flex items-center justify-center relative overflow-hidden">
+      {/* Right Side - Robot Illustration - Desktop Only */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-400 to-primary items-center justify-center relative overflow-hidden">
         <div className="relative"></div>
         <div className="">
           <img src={robot} alt="robot" className="w-full h-full object-cover" />

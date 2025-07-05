@@ -8,6 +8,7 @@ import VarifyOTP from "../components/VarifyOTP/VarifyOTP";
 import ResetPass from "../components/ResetPass/ResetPass";
 import Dashboard from "../Layouts/Dashboard";
 import DashboardLayout from "../Layouts/DashboardLayout";
+import SuccessMsg from "../components/SuccessMsg/SuccessMsg";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -47,5 +48,9 @@ export const router = createBrowserRouter([
   {
     path: "/reset-password",
     element: <ResetPass />,
+  },
+  {
+    path: "/success-msg",
+    element: <SuccessMsg />,
   },
 ]);
