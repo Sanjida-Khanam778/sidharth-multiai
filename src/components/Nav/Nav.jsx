@@ -12,15 +12,6 @@ const Nav = () => {
               <img src={logo} alt="logo" className="w-32 md:w-48 lg:w-64" />
             </div>
           </Link>
-
-       
-
-          {/* Auth Buttons */}
-          <div className="flex items-center space-x-4">
-         
-          </div>
-
-       
         </div>
       </div>
     </nav>
