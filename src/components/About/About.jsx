@@ -1,11 +1,11 @@
 const About = () => {
     return (
-      <div className=" py-20">
+      <div className="pt-10 md:py-20">
         <div className="w-10/12 mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center justify-between">
             {/* Left Column - Headline */}
             <div>
-              <h1 className="text-4xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-relaxed tracking-wide">
+              <h1 className="text-4xl md:text-4xl lg:text-5xl font-bold text-gray-900 md:leading-relaxed tracking-wide">
                 The World's Most Comprehensive AI <br /> insights for Research <br /> and Development
               </h1>
             </div>
