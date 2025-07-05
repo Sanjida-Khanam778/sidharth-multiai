@@ -5,7 +5,7 @@ import profile from "../assets/images/profile.png";
 export default function Dashboard() {
   const [currentChat, setCurrentChat] = useState("");
   const [message, setMessage] = useState("");
-
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const chatHistory = {
     Today: [
       "Proteins in Alzheimer's Disease",
@@ -119,17 +119,65 @@ export default function Dashboard() {
     console.log("Starting new chat");
   };
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
-    <div className="flex h-[89vh] bg-gray-50">
-      {/* Sidebar */}
-      <Sidebar
-        chatHistory={chatHistory}
-        handleNewChat={handleNewChat}
-        setCurrentChat={setCurrentChat}
-      />
+    <div className="flex h-[89vh] bg-gray-50 relative">
+      {/* Sidebar for large screens */}
+      <div className="hidden lg:block lg:relative lg:z-0 h-full border ">
+        <Sidebar
+          chatHistory={chatHistory}
+          handleNewChat={handleNewChat}
+          setCurrentChat={setCurrentChat}
+        />
+      </div>
+
+      {/* Sidebar for mobile/tablet */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={toggleSidebar}
+        />
+      )}
+      <div
+        className={`fixed z-50 h-full w-80 transition-transform duration-300 ease-in-out lg:hidden ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <Sidebar
+          chatHistory={chatHistory}
+          handleNewChat={handleNewChat}
+          setCurrentChat={setCurrentChat}
+          onClose={() => setSidebarOpen(false)}
+        />
+      </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col w-10/12">
+        {/* Header with Hamburger Menu */}
+        <div className="bg-white border-b border-gray-200 p-4 lg:hidden">
+          <button
+            onClick={toggleSidebar}
+            className="text-gray-600 hover:text-gray-900 focus:outline-none focus:text-gray-900"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+        </div>
+
         {/* Chat Messages */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {chatMessages.map((msg, index) => (
@@ -140,7 +188,11 @@ export default function Dashboard() {
                     {msg.content}
                   </div>
                   <div className=" w-8 h-8 my-auto rounded-full ml-3">
-                    <img src={profile} alt="profile" className="w-full h-full rounded-full" />
+                    <img
+                      src={profile}
+                      alt="profile"
+                      className="w-full h-full rounded-full"
+                    />
                   </div>
                 </div>
               ) : (
@@ -212,7 +264,6 @@ export default function Dashboard() {
                 placeholder="Enter your biomedical query here..."
                 className="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
-    
             </div>
             <button
               type="submit"
