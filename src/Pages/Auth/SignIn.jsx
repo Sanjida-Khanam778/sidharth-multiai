@@ -1,17 +1,18 @@
 import { useState } from "react";
 import logo from "../../assets/images/logo.png";
 import robot from "../../assets/images/robot.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Sign in attempted with:", { email, password, rememberMe });
+    navigate("/");
   };
 
   return (

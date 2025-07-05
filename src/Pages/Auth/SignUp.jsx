@@ -1,7 +1,7 @@
 import { useState } from "react";
 import logo from "../../assets/images/logo.png";
 import robot from "../../assets/images/robot.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function SignUp() {
@@ -10,6 +10,7 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,6 +20,7 @@ export default function SignUp() {
       password,
       rememberMe,
     });
+    navigate("/");
   };
 
   return (
@@ -34,7 +36,7 @@ export default function SignUp() {
       <div className="lg:hidden bg-gradient-to-br from-blue-400 to-primary h-64 sm:h-80 flex items-center justify-center relative overflow-hidden">
         <div className="h-80 sm:h-96">
           <img src={robot} alt="robot" className="w-full h-full object-cover" />
-        </div>{" "}
+        </div>
         {/* Background Decorative Elements */}
         <div className="absolute top-8 left-8 w-4 h-4 bg-white bg-opacity-20 rounded-full"></div>
         <div className="absolute bottom-16 right-8 w-6 h-6 bg-white bg-opacity-15 rounded-full"></div>
