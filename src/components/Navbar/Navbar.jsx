@@ -1,9 +1,18 @@
 import React, { useState } from "react";
 import logo from "../../assets/images/logo.png";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectIsAuthenticated,
+  selectUser,
+  logout,
+} from "../../Stores/authSlice";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -11,6 +20,11 @@ const Navbar = () => {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    closeMobileMenu();
   };
 
   return (
@@ -48,16 +62,32 @@ const Navbar = () => {
 
           {/* Auth Buttons - Desktop */}
           <div className="hidden lg:flex items-center space-x-3 xl:space-x-4">
-            <Link to="/login">
-              <button className="text-gray-700 hover:text-primary px-3 xl:px-4 py-2 font-semibold transition-colors duration-200 text-sm xl:text-base">
-                Sign In
-              </button>
-            </Link>
-            <Link to="/register">
-              <button className="bg-primary text-white px-4 xl:px-6 py-2 rounded-lg font-semibold transition-colors duration-200 shadow-sm text-sm xl:text-base">
-                Sign up
-              </button>
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <span className="text-gray-700 text-sm xl:text-base">
+                  Welcome, {user?.fullName || user?.email}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 text-white px-4 xl:px-6 py-2 rounded-lg font-semibold transition-colors duration-200 shadow-sm text-sm xl:text-base hover:bg-red-600"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login">
+                  <button className="text-gray-700 hover:text-primary px-3 xl:px-4 py-2 font-semibold transition-colors duration-200 text-sm xl:text-base">
+                    Sign In
+                  </button>
+                </Link>
+                <Link to="/register">
+                  <button className="bg-primary text-white px-4 xl:px-6 py-2 rounded-lg font-semibold transition-colors duration-200 shadow-sm text-sm xl:text-base">
+                    Sign up
+                  </button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -117,16 +147,32 @@ const Navbar = () => {
 
               {/* Mobile Auth Buttons */}
               <div className="pt-4 pb-2 space-y-3">
-                <Link to="/login" onClick={closeMobileMenu}>
-                  <button className="w-full text-center border rounded text-gray-700 mb-2 hover:text-primary px-3 py-2 font-semibold transition-colors duration-200 text-base">
-                    Sign In
-                  </button>
-                </Link>
-                <Link to="/register" onClick={closeMobileMenu}>
-                  <button className="w-full bg-primary text-white px-3 py-2 rounded-lg font-semibold transition-colors duration-200 shadow-sm text-base">
-                    Sign up
-                  </button>
-                </Link>
+                {isAuthenticated ? (
+                  <>
+                    <div className="px-3 py-2 text-gray-700 text-sm">
+                      Welcome, {user?.fullName || user?.email}
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full bg-red-500 text-white px-3 py-2 rounded-lg font-semibold transition-colors duration-200 shadow-sm text-base"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login" onClick={closeMobileMenu}>
+                      <button className="w-full text-center border rounded text-gray-700 mb-2 hover:text-primary px-3 py-2 font-semibold transition-colors duration-200 text-base">
+                        Sign In
+                      </button>
+                    </Link>
+                    <Link to="/register" onClick={closeMobileMenu}>
+                      <button className="w-full bg-primary text-white px-3 py-2 rounded-lg font-semibold transition-colors duration-200 shadow-sm text-base">
+                        Sign up
+                      </button>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>

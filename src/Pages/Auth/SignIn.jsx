@@ -2,17 +2,29 @@ import { useState } from "react";
 import logo from "../../assets/images/logo.png";
 import robot from "../../assets/images/robot.png";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../../Stores/authSlice";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Sign in attempted with:", { email, password, rememberMe });
-    navigate("/");
+    setError("");
+
+    try {
+      dispatch(login({ email, password }));
+      console.log("Sign in successful with:", { email, password, rememberMe });
+      navigate("/");
+    } catch (error) {
+      setError("Invalid email or password. Use test@example.com / password123");
+    }
   };
 
   return (
@@ -49,7 +61,24 @@ export default function SignInForm() {
                 Create Now
               </Link>
             </p>
+            {/* Test credentials info */}
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                <strong>Test Credentials:</strong>
+                <br />
+                Email: test@example.com
+                <br />
+                Password: password123
+              </p>
+            </div>
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-800">{error}</p>
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-6">

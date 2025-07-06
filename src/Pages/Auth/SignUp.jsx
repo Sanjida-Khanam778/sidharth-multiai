@@ -3,6 +3,8 @@ import logo from "../../assets/images/logo.png";
 import robot from "../../assets/images/robot.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { register } from "../../Stores/authSlice";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,17 +12,26 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Sign up attempted with:", {
-      fullName,
-      email,
-      password,
-      rememberMe,
-    });
-    navigate("/");
+    setError("");
+
+    try {
+      dispatch(register({ fullName, email, password }));
+      console.log("Sign up successful with:", {
+        fullName,
+        email,
+        password,
+        rememberMe,
+      });
+      navigate("/");
+    } catch (error) {
+      setError("Registration failed. Please try again.");
+    }
   };
 
   return (
@@ -70,6 +81,13 @@ export default function SignUp() {
             </p>
           </div>
 
+          {/* Error Message */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-800">{error}</p>
+            </div>
+          )}
+
           <button
             type="button"
             className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors mb-6 text-sm sm:text-base"
@@ -116,6 +134,7 @@ export default function SignUp() {
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="John Doe"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm sm:text-base"
+                required
               />
             </div>
 
@@ -129,6 +148,7 @@ export default function SignUp() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="example@gmail.com"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm sm:text-base"
+                required
               />
             </div>
 
@@ -143,6 +163,7 @@ export default function SignUp() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none pr-12 text-sm sm:text-base"
+                  required
                 />
                 <button
                   type="button"

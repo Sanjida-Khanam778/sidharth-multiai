@@ -3,7 +3,6 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import profile from "../assets/images/profile.png";
 
 export default function Dashboard() {
-  const [currentChat, setCurrentChat] = useState("");
   const [message, setMessage] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const chatHistory = {
@@ -117,6 +116,7 @@ export default function Dashboard() {
 
   const handleNewChat = () => {
     console.log("Starting new chat");
+    setChatMessages([]);
   };
 
   const toggleSidebar = () => {
@@ -127,11 +127,7 @@ export default function Dashboard() {
     <div className="flex h-[89vh] bg-gray-50 relative">
       {/* Sidebar for large screens */}
       <div className="hidden lg:block lg:relative lg:z-0 h-full border ">
-        <Sidebar
-          chatHistory={chatHistory}
-          handleNewChat={handleNewChat}
-          setCurrentChat={setCurrentChat}
-        />
+        <Sidebar chatHistory={chatHistory} handleNewChat={handleNewChat} />
       </div>
 
       {/* Sidebar for mobile/tablet */}
@@ -149,7 +145,6 @@ export default function Dashboard() {
         <Sidebar
           chatHistory={chatHistory}
           handleNewChat={handleNewChat}
-          setCurrentChat={setCurrentChat}
           onClose={() => setSidebarOpen(false)}
         />
       </div>

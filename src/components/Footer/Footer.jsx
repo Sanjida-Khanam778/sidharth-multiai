@@ -1,14 +1,16 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer className="bg-primary text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 py-12">
+      <div className="">
+        <div className="w-10/12 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 py-12">
           {/* Company Info */}
-          <div>
-            <h3 className="text-xl md:text-3xl font-bold mb-4 text-center lg:text-left">
+          <div className="lg:col-span-2">
+            <h3 className="text-xl md:text-3xl lg:text-4xl font-bold mb-4 text-center lg:text-left">
               CurieCell AI Engine
             </h3>
-            <p className="text-blue-100 leading-relaxed text-center lg:text-left">
+            <p className="text-blue-100 leading-relaxed tracking-wider text-center lg:text-left">
               BioQuery AI is a smart research tool that delivers side-by-side
               answers from multiple AI engines for biomedical questions, with
               citations and visual support.
@@ -16,7 +18,7 @@ const Footer = () => {
           </div>
 
           {/* Navigation */}
-          <div className="text-center lg:text-left">
+          <div className="text-center mx-auto lg:text-left">
             <h4 className="font-semibold mb-4">Navigation</h4>
             <ul className="space-y-2">
               <li>
@@ -29,7 +31,7 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="#features"
                   className="text-blue-100 hover:text-white transition-colors"
                 >
                   Features
@@ -37,7 +39,7 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="#about"
                   className="text-blue-100 hover:text-white transition-colors"
                 >
                   About
@@ -47,17 +49,16 @@ const Footer = () => {
           </div>
 
           {/* Legal */}
-          <div className="text-center lg:text-left">
+          <div className="text-center lg:text-left mx-auto">
             <h4 className="font-semibold mb-4">Legal</h4>
             <ul className="space-y-2">
-              <li>
-                <a
-                  href="#"
-                  className="text-blue-100 hover:text-white transition-colors"
-                >
-                  Register/SignUp
-                </a>
-              </li>
+              <Link to={'/register'}>
+                <li>
+                  <div className="text-blue-100 hover:text-white transition-colors">
+                    Register/SignUp
+                  </div>
+                </li>
+              </Link>
             </ul>
           </div>
 
