@@ -118,7 +118,7 @@ const Navbar = () => {
               {/* Mobile Auth Buttons */}
               <div className="pt-4 pb-2 space-y-3">
                 <Link to="/login" onClick={closeMobileMenu}>
-                  <button className="w-full text-left text-gray-700 hover:text-primary px-3 py-2 font-semibold transition-colors duration-200 text-base">
+                  <button className="w-full text-center border rounded text-gray-700 mb-2 hover:text-primary px-3 py-2 font-semibold transition-colors duration-200 text-base">
                     Sign In
                   </button>
                 </Link>

@@ -34,7 +34,7 @@ const Features = () => {
   return (
     <div id="features" className="bg-white py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 md:mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Platform Features
           </h2>
@@ -44,7 +44,7 @@ const Features = () => {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="bg-gray-50 rounded-xl p-8 hover:shadow-lg transition-shadow duration-300"
+              className="bg-gray-50 rounded-xl p-4 md:p-8 hover:shadow-lg transition-shadow duration-300"
             >
               <div className="mb-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -54,7 +54,7 @@ const Features = () => {
               </div>
 
               {/* Mock Interface */}
-              <div className=" p-4 relative overflow-hidden w-full h-80">
+              <div className=" md:p-4 relative overflow-hidden w-full h-80">
                 <img
                   src={feature.image}
                   className="w-full h-full object-cover rounded-xl"
