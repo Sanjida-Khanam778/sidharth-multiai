@@ -62,15 +62,15 @@ export default function SignInForm() {
               </Link>
             </p>
             {/* Test credentials info */}
-            {/* <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-blue-800">
                 <strong>Test Credentials:</strong>
                 <br />
-                Email: test@example.com
+                Email: test@gmail.com
                 <br />
-                Password: password123
+                Password: 123
               </p>
-            </div> */}
+            </div>
           </div>
 
           {/* Error Message */}
