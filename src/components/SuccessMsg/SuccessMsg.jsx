@@ -39,7 +39,7 @@ export default function SuccessMsg() {
             <p className="text-gray-600 mb-8">Your all are set successfully</p>
 
             {/* Sign in button */}
-            <Link to={"/"}>
+            <Link to={"/login"}>
               <button className="w-full bg-primary text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
                 Go to sign in
               </button>

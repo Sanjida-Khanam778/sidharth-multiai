@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 // Static email for testing
-const STATIC_EMAIL = "test@example.com";
-const STATIC_PASSWORD = "password123";
+const STATIC_EMAIL = "test@gmail.com";
+const STATIC_PASSWORD = "123";
 
 const initialState = {
   user: null,
@@ -23,7 +23,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.user = {
           email: STATIC_EMAIL,
-          fullName: "Test User",
+          fullName: "Sidharth",
         };
         state.email = email;
         state.password = password;

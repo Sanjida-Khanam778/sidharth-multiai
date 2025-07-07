@@ -23,7 +23,7 @@ export default function SignInForm() {
       console.log("Sign in successful with:", { email, password, rememberMe });
       navigate("/");
     } catch (error) {
-      setError("Invalid email or password. Use test@example.com / password123");
+      setError("Invalid email or password.");
     }
   };
 
@@ -62,7 +62,7 @@ export default function SignInForm() {
               </Link>
             </p>
             {/* Test credentials info */}
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            {/* <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-blue-800">
                 <strong>Test Credentials:</strong>
                 <br />
@@ -70,7 +70,7 @@ export default function SignInForm() {
                 <br />
                 Password: password123
               </p>
-            </div>
+            </div> */}
           </div>
 
           {/* Error Message */}
