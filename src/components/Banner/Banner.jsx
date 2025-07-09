@@ -30,9 +30,11 @@ export default function Banner() {
                 Get Started
               </button>
             </Link>
-            <button className="bg-transparent hover:bg-primary hover:text-white font-semibold text-lg sm:text-xl border-2 py-3 px-10 sm:px-16 rounded-lg w-full sm:w-auto">
-              How it work
-            </button>
+            <a href="#about">
+              <button className="bg-transparent hover:bg-primary hover:text-white font-semibold text-lg sm:text-xl border-2 py-3 px-10 sm:px-16 rounded-lg w-full sm:w-auto">
+                How it work
+              </button>
+            </a>
           </div>
         </div>
       </div>
