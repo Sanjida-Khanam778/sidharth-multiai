@@ -11,7 +11,7 @@ export default function Dashboard() {
       "Best biomarkers for lung cancer",
       "Target discovery for glioblastoma treatment",
       "Top expressed genes in liver tissues",
-    ],
+    ], 
     Yesterday: [
       "Proteins in Alzheimer's Disease",
       "Best biomarkers for lung cancer",
