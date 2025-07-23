@@ -4,7 +4,9 @@ import robot from "../../assets/images/robot.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { register } from "../../Stores/authSlice";
+import { useRegisterMutation } from "../../Api/authapi";
+import { setCredentials } from "../../Stores/authSlice";
+import toast from "react-hot-toast";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,22 +17,41 @@ export default function SignUp() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [register, { isLoading }] = useRegisterMutation();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      dispatch(register({ fullName, email, password }));
+      const result = await register({
+        full_name: fullName,
+        email,
+        password,
+      }).unwrap();
+      dispatch(
+        setCredentials({
+          access: result.access,
+          refresh: result.refresh,
+          user: { email, fullName },
+        })
+      );
       console.log("Sign up successful with:", {
         fullName,
         email,
         password,
         rememberMe,
+        result,
       });
       navigate("/");
     } catch (error) {
-      setError("Registration failed. Please try again.");
+      const errorMsg =
+        error?.data?.message ||
+        error?.error ||
+        "Registration failed. Please try again.";
+      if (errorMsg === "User with this email already exists.") {
+        toast.error(errorMsg);
+      } 
     }
   };
 
@@ -194,8 +215,9 @@ export default function SignUp() {
             <button
               type="submit"
               className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary transition-colors text-sm sm:text-base"
+              disabled={isLoading}
             >
-              Register
+              {isLoading ? "Registering..." : "Register"}
             </button>
           </form>
         </div>

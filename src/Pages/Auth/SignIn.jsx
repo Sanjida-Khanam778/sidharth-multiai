@@ -3,7 +3,9 @@ import logo from "../../assets/images/logo.png";
 import robot from "../../assets/images/robot.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login } from "../../Stores/authSlice";
+import { setCredentials } from "../../Stores/authSlice";
+import { useLoginMutation } from "../../Api/authapi";
+import toast from "react-hot-toast";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,17 +15,39 @@ export default function SignInForm() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [login, { isLoading }] = useLoginMutation();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      dispatch(login({ email, password }));
-      console.log("Sign in successful with:", { email, password, rememberMe });
+      const result = await login({ email, password }).unwrap();
+      dispatch(
+        setCredentials({
+          access: result.access,
+          refresh: result.refresh,
+          user: { email },
+        })
+      );
+      console.log("Sign in successful with:", {
+        email,
+        password,
+        rememberMe,
+        result,
+      });
       navigate("/");
     } catch (error) {
-      setError("Invalid email or password.");
+      const errorMsg =
+        error?.data?.non_field_errors?.[0] ||
+        error?.data?.message ||
+        error?.error ||
+        "Invalid email or password.";
+      if (errorMsg === "Invalid credentials") {
+        toast.error(errorMsg);
+      } else {
+        setError(errorMsg);
+      }
     }
   };
 
@@ -61,16 +85,6 @@ export default function SignInForm() {
                 Create Now
               </Link>
             </p>
-            {/* Test credentials info */}
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">
-                <strong>Test Credentials:</strong>
-                <br />
-                Email: test@gmail.com
-                <br />
-                Password: 123
-              </p>
-            </div>
           </div>
 
           {/* Error Message */}
@@ -178,8 +192,9 @@ export default function SignInForm() {
             <button
               type="submit"
               className="w-full bg-primary text-white py-2 sm:py-3 px-4 rounded-md hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition duration-200 text-sm sm:text-base font-medium"
+              disabled={isLoading}
             >
-              Sign in
+              {isLoading ? "Signing in..." : "Sign in"}
             </button>
 
             {/* Google Sign In */}

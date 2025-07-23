@@ -9,6 +9,8 @@ const initialState = {
   isAuthenticated: false,
   email: "",
   password: "",
+  access: null,
+  refresh: null,
 };
 
 const authSlice = createSlice({
@@ -49,10 +51,17 @@ const authSlice = createSlice({
       state.email = email;
       state.password = password;
     },
+    setCredentials: (state, action) => {
+      const { access, refresh, user } = action.payload;
+      state.access = access;
+      state.refresh = refresh;
+      state.user = user || null;
+      state.isAuthenticated = !!access;
+    },
   },
 });
 
-export const { login, logout, register } = authSlice.actions;
+export const { login, logout, register, setCredentials } = authSlice.actions;
 export default authSlice.reducer;
 
 // Selectors
