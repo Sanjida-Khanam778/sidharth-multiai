@@ -14,14 +14,12 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [register, { isLoading }] = useRegisterMutation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
     try {
       const result = await register({
@@ -51,7 +49,7 @@ export default function SignUp() {
         "Registration failed. Please try again.";
       if (errorMsg === "User with this email already exists.") {
         toast.error(errorMsg);
-      } 
+      }
     }
   };
 
@@ -101,13 +99,6 @@ export default function SignUp() {
               Please enter your details to get started
             </p>
           </div>
-
-          {/* Error Message */}
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-800">{error}</p>
-            </div>
-          )}
 
           <button
             type="button"

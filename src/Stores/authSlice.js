@@ -17,40 +17,42 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    login: (state, action) => {
-      const { email, password } = action.payload;
+    // login: (state, action) => {
+    //   const { email, password } = action.payload;
 
-      // Check against static credentials
-      if (email === STATIC_EMAIL && password === STATIC_PASSWORD) {
-        state.isAuthenticated = true;
-        state.user = {
-          email: STATIC_EMAIL,
-          fullName: "Sidharth",
-        };
-        state.email = email;
-        state.password = password;
-      } else {
-        throw new Error("Invalid credentials");
-      }
-    },
+    //   // Check against static credentials
+    //   if (email === STATIC_EMAIL && password === STATIC_PASSWORD) {
+    //     state.isAuthenticated = true;
+    //     state.user = {
+    //       email: STATIC_EMAIL,
+    //       fullName: "Sidharth",
+    //     };
+    //     state.email = email;
+    //     state.password = password;
+    //   } else {
+    //     throw new Error("Invalid credentials");
+    //   }
+    // },
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
       state.email = "";
       state.password = "";
+      state.access = null;
+      state.refresh = null;
     },
-    register: (state, action) => {
-      const { fullName, email, password } = action.payload;
+    // register: (state, action) => {
+    //   const { fullName, email, password } = action.payload;
 
-      // For registration, we'll accept any email but use the static one for consistency
-      state.isAuthenticated = true;
-      state.user = {
-        email: email,
-        fullName: fullName,
-      };
-      state.email = email;
-      state.password = password;
-    },
+    //   // For registration, we'll accept any email but use the static one for consistency
+    //   state.isAuthenticated = true;
+    //   state.user = {
+    //     email: email,
+    //     fullName: fullName,
+    //   };
+    //   state.email = email;
+    //   state.password = password;
+    // },
     setCredentials: (state, action) => {
       const { access, refresh, user } = action.payload;
       state.access = access;

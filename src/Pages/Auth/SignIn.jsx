@@ -12,17 +12,15 @@ export default function SignInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [login, { isLoading }] = useLoginMutation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
     try {
-      const result = await login({ email, password }).unwrap();
+      const result = await login({ username:email, password }).unwrap();
       dispatch(
         setCredentials({
           access: result.access,
@@ -41,12 +39,9 @@ export default function SignInForm() {
       const errorMsg =
         error?.data?.non_field_errors?.[0] ||
         error?.data?.message ||
-        error?.error ||
-        "Invalid email or password.";
+        error?.error
       if (errorMsg === "Invalid credentials") {
         toast.error(errorMsg);
-      } else {
-        setError(errorMsg);
       }
     }
   };
@@ -87,12 +82,7 @@ export default function SignInForm() {
             </p>
           </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-800">{error}</p>
-            </div>
-          )}
+       
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-6">
@@ -191,6 +181,7 @@ export default function SignInForm() {
             {/* Sign In Button */}
             <button
               type="submit"
+              onClick={handleSubmit}
               className="w-full bg-primary text-white py-2 sm:py-3 px-4 rounded-md hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition duration-200 text-sm sm:text-base font-medium"
               disabled={isLoading}
             >
