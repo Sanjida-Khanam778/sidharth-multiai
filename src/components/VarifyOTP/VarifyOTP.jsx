@@ -1,10 +1,16 @@
 import { useState } from "react";
 import logo from "../../assets/images/logo.png";
 import robot from "../../assets/images/robot.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useVerifyOtpMutation } from "../../Api/authapi";
+import toast from "react-hot-toast";
 
 export default function VarifyOTP() {
   const [otp, setOtp] = useState(["", "", "", ""]);
+  const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const email = location.state?.email || "";
 
   const handleOtpChange = (index, value) => {
     if (value.length <= 1) {
@@ -19,6 +25,24 @@ export default function VarifyOTP() {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error("Email not found. Please go back and enter your email.");
+      return;
+    }
+    const otpValue = otp.join("");
+    try {
+      await verifyOtp({ email, otp: otpValue }).unwrap();
+      toast.success("OTP verified successfully");
+      navigate("/reset-password", { state: { email } });
+    } catch (error) {
+      const errorMsg =
+        error?.data?.message || error?.error || "OTP verification failed.";
+      toast.error(errorMsg);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col lg:flex-row font-manrope">
       {/* Logo - Mobile */}
@@ -28,10 +52,9 @@ export default function VarifyOTP() {
         </div>
       </Link>
 
-
       {/* Robot Image - Mobile (below navbar) */}
       <div className="lg:hidden bg-gradient-to-br from-primary to-primary h-64 sm:h-80 flex items-center justify-center relative overflow-hidden">
-      <div className="h-80 sm:h-96">
+        <div className="h-80 sm:h-96">
           <img src={robot} alt="robot" className="w-full h-full object-cover" />
         </div>
         {/* Background Decorative Elements */}
@@ -42,8 +65,6 @@ export default function VarifyOTP() {
 
       {/* Left Side - OTP Verification Form */}
       <div className="flex-1 lg:w-1/2 bg-white p-4 sm:p-6 my-10 md:my-0 lg:p-8 flex flex-col justify-center">
-     
-
         <div className="w-full max-w-sm mx-auto">
           <div className="mb-6 lg:mb-8">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
@@ -54,7 +75,7 @@ export default function VarifyOTP() {
             </p>
           </div>
 
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="flex justify-center space-x-2 sm:space-x-3">
               {otp.map((digit, index) => (
                 <input
@@ -69,14 +90,13 @@ export default function VarifyOTP() {
               ))}
             </div>
 
-            <Link to="/reset-password">
-              <button
-                type="submit"
-                className="w-full bg-primary text-white py-3 mt-4 rounded-lg font-medium hover:bg-primary transition-colors text-sm sm:text-base"
-              >
-                Verify Code
-              </button>
-            </Link>
+            <button
+              type="submit"
+              className="w-full bg-primary text-white py-3 mt-4 rounded-lg font-medium hover:bg-primary transition-colors text-sm sm:text-base"
+              disabled={isLoading}
+            >
+              {isLoading ? "Verifying..." : "Verify Code"}
+            </button>
 
             <div className="text-center">
               <Link

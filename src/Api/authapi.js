@@ -45,7 +45,34 @@ export const authapi = createApi({
         body,
       }),
     }),
+    forgotPassword: builder.mutation({
+      query: (body) => ({
+        url: "/api/v1/forgot-password/",
+        method: "POST",
+        body,
+      }),
+    }),
+    verifyOtp: builder.mutation({
+      query: (body) => ({
+        url: "/api/v1/verify-otp/",
+        method: "POST",
+        body,
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: (body) => ({
+        url: "/api/v1/reset-password/",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation } = authapi;
+export const {
+  useRegisterMutation,
+  useLoginMutation,
+  useForgotPasswordMutation,
+  useVerifyOtpMutation,
+  useResetPasswordMutation,
+} = authapi;

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import logo from "../../assets/images/logo.png";
 import robot from "../../assets/images/robot.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { useResetPasswordMutation } from "../../Api/authapi";
+import toast from "react-hot-toast";
 
 export default function ResetPass() {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,12 +12,30 @@ export default function ResetPass() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
+  const email = location.state?.email || "";
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Password reset attempted with:", {
-      password,
-      confirmPassword,
-    });
+    if (!email) {
+      toast.error("Email not found. Please go back and enter your email.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+    try {
+      await resetPassword({ email, new_password: password }).unwrap();
+      toast.success("Password updated successfully");
+      navigate("/success-msg");
+    } catch (error) {
+      const errorMsg =
+        error?.data?.message || error?.error || "Failed to reset password.";
+      toast.error(errorMsg);
+    }
   };
 
   return (
@@ -103,14 +123,13 @@ export default function ResetPass() {
               </div>
             </div>
 
-            <Link to="/success-msg">
-              <button
-                type="submit"
-                className="w-full bg-primary text-white py-3 mt-4 rounded-lg font-medium hover:bg-primary transition-colors text-sm sm:text-base"
-              >
-                Update Password
-              </button>
-            </Link>
+            <button
+              type="submit"
+              className="w-full bg-primary text-white py-3 mt-4 rounded-lg font-medium hover:bg-primary transition-colors text-sm sm:text-base"
+              disabled={isLoading}
+            >
+              {isLoading ? "Updating..." : "Update Password"}
+            </button>
 
             <div className="text-center">
               <Link
