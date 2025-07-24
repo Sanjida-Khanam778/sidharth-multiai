@@ -1,30 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-const baseQuery = fetchBaseQuery({
-  baseUrl: "http://10.10.13.21:8000/",
-  prepareHeaders: (headers, { getState }) => {
-    // Try to get token from Redux state
-    const token = getState().auth?.accessToken || null;
-    // If token not in state, retrieve from local storage
-    if (token) {
-      headers.set("authorization", `Bearer ${token}`);
-    } else {
-      const authString = localStorage.getItem("auth");
-      let authData = null;
-      if (authString) {
-        try {
-          authData = JSON.parse(authString);
-        } catch (e) {
-          authData = null;
-        }
-      }
-      if (authData?.access) {
-        headers.set("authorization", `Bearer ${authData.access}`); // Set Authorization header
-      }
-    }
-    return headers;
-  },
-});
+import { createApi } from "@reduxjs/toolkit/query/react";
+import baseQuery from "./baseQuery";
 
 export const authapi = createApi({
   reducerPath: "authApi",
@@ -66,6 +41,15 @@ export const authapi = createApi({
         body,
       }),
     }),
+    // This endpoint will automatically include the Authorization header if the user is logged in
+    // and the access token is present in Redux state or localStorage (see baseQuery above).
+    chat: builder.mutation({
+      query: (body) => ({
+        url: "/api/v1/chat/",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -75,4 +59,5 @@ export const {
   useForgotPasswordMutation,
   useVerifyOtpMutation,
   useResetPasswordMutation,
+  useChatMutation,
 } = authapi;

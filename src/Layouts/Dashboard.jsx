@@ -1,8 +1,12 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import profile from "../assets/images/profile.png";
+import botProfile from "../assets/images/robot.png";
+
+import { useChatMutation } from "../Api/authapi";
 
 export default function Dashboard() {
+  const [chat, { isLoading }] = useChatMutation();
   const [message, setMessage] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const chatHistory = {
@@ -11,7 +15,7 @@ export default function Dashboard() {
       "Best biomarkers for lung cancer",
       "Target discovery for glioblastoma treatment",
       "Top expressed genes in liver tissues",
-    ], 
+    ],
     Yesterday: [
       "Proteins in Alzheimer's Disease",
       "Best biomarkers for lung cancer",
@@ -32,84 +36,63 @@ export default function Dashboard() {
 
   const [chatMessages, setChatMessages] = useState([]);
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
     if (message.trim()) {
+      setChatMessages((prev) => [...prev, { type: "user", content: message }]);
+      // Add loading bot message with a unique id
+      const loadingId = Date.now();
       setChatMessages((prev) => [
         ...prev,
-        { type: "user", content: message },
         {
           type: "assistant",
+          loading: true,
+          id: loadingId,
           content: {
             sources: [
               {
-                name: "Casually",
-                data: {
-                  role: "Forms sticky plaques outside neurons.",
-                  pathology:
-                    "Misfolded Aβ peptides accumulate to form amyloid plaques.",
-                  source:
-                    "Produced from the cleavage of amyloid precursor protein (APP)",
-                },
-              },
-              {
-                name: "Xolain Data",
-                data: {
-                  role: "Forms sticky plaques outside neurons.",
-                  pathology:
-                    "Misfolded Aβ peptides accumulate to form amyloid plaques.",
-                  source:
-                    "Produced from the cleavage of amyloid precursor protein (APP)",
-                },
-              },
-              {
-                name: "VELDT",
-                data: {
-                  role: "Forms sticky plaques outside neurons.",
-                  pathology:
-                    "Misfolded Aβ peptides accumulate to form amyloid plaques.",
-                },
-              },
-              {
-                name: "JDCT",
-                data: {
-                  role: "Forms sticky plaques outside neurons.",
-                  pathology:
-                    "Misfolded Aβ peptides accumulate to form amyloid plaques.",
-                },
-              },
-              {
-                name: "ChatGPT",
-                data: {
-                  role: "Forms sticky plaques outside neurons.",
-                  source:
-                    "Produced from the cleavage of amyloid precursor protein (APP)",
-                  source2:
-                    "Produced from the cleavage of amyloid precursor protein (APP)",
-                },
-              },
-              {
-                name: "Gemini",
-                data: {
-                  role: "Forms sticky plaques outside neurons.",
-                  pathology:
-                    "Misfolded Aβ peptides accumulate to form amyloid plaques.",
-                },
-              },
-              {
-                name: "Gemini by Anthropic",
-                data: {
-                  role: "Forms sticky plaques outside neurons.",
-                  pathology:
-                    "Misfolded Aβ peptides accumulate to form amyloid plaques.",
-                  source:
-                    "Produced from the cleavage of amyloid precursor protein (APP)",
-                },
+                name: "Assistant",
+                data: { content: "Thinking..." },
               },
             ],
           },
         },
       ]);
+      try {
+        const data = await chat({ input_text: message }).unwrap();
+        const sources = [
+          { name: "Mistral", data: { content: data.responses.mistral } },
+          { name: "Gemini", data: { content: data.responses.gemini } },
+          { name: "Claude", data: { content: data.responses.claude } },
+          { name: "ChatGPT", data: { content: data.responses.chatgpt } },
+          { name: "XAI", data: { content: data.responses.xai } },
+          { name: "Deepseek", data: { content: data.responses.deepseek } },
+        ];
+        setChatMessages((prev) =>
+          prev
+            .filter((msg) => !(msg.loading && msg.id === loadingId))
+            .concat({
+              type: "assistant",
+              content: { sources },
+            })
+        );
+      } catch (err) {
+        setChatMessages((prev) =>
+          prev
+            .filter((msg) => !(msg.loading && msg.id === loadingId))
+            .concat({
+              type: "assistant",
+              content: {
+                sources: [
+                  {
+                    name: "Error",
+                    data: { content: "Failed to fetch response." },
+                  },
+                ],
+              },
+            })
+        );
+      }
       setMessage("");
     }
   };
@@ -175,7 +158,7 @@ export default function Dashboard() {
 
         {/* Chat Messages */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {chatMessages.map((msg, index) => (
+          {chatMessages?.map((msg, index) => (
             <div key={index}>
               {msg.type === "user" ? (
                 <div className="flex justify-end mb-4">
@@ -192,48 +175,26 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <div className="flex items-start space-x-3 mb-6">
-                  <div className="w-8 h-8 bg-gray-800 rounded-full flex-shrink-0 flex items-center justify-center">
-                    <div className="w-4 h-4 bg-white rounded-sm"></div>
+                  <div className="w-8 h-8 bg-gray-800 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden">
+                    <img
+                      src={botProfile}
+                      alt="bot"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div className="flex-1">
                     <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
                       {msg.content.sources.map((source, sourceIndex) => (
-                        <div
-                          key={sourceIndex}
-                          className={`p-4 ${
-                            sourceIndex !== msg.content.sources.length - 1
-                              ? ""
-                              : ""
-                          }`}
-                        >
+                        <div key={sourceIndex} className="p-4">
                           <div className="font-semibold text-gray-900 mb-2">
                             {source.name}
                           </div>
-                          <div className="space-y-2 text-sm text-gray-700">
-                            {source.data.role && (
-                              <div>
-                                <span className="font-medium">Role:</span>{" "}
-                                {source.data.role}
-                              </div>
-                            )}
-                            {source.data.pathology && (
-                              <div>
-                                <span className="font-medium">Pathology:</span>{" "}
-                                {source.data.pathology}
-                              </div>
-                            )}
-                            {source.data.source && (
-                              <div>
-                                <span className="font-medium">Source:</span>{" "}
-                                {source.data.source}
-                              </div>
-                            )}
-                            {source.data.source2 && (
-                              <div>
-                                <span className="font-medium">Source:</span>{" "}
-                                {source.data.source2}
-                              </div>
-                            )}
+                          <div
+                            className={`space-y-2 text-sm text-gray-700 whitespace-pre-line ${
+                              msg.loading ? "animate-pulse" : ""
+                            }`}
+                          >
+                            {source.data.content}
                           </div>
                         </div>
                       ))}
@@ -243,6 +204,25 @@ export default function Dashboard() {
               )}
             </div>
           ))}
+          {isLoading && (
+            <div className="flex items-start space-x-3 mb-6">
+              <div className="w-8 h-8 bg-gray-800 rounded-full flex-shrink-0 flex items-center justify-center">
+                <div className="w-4 h-4 bg-white rounded-sm"></div>
+              </div>
+              <div className="flex-1">
+                <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                  <div className="p-4">
+                    <div className="font-semibold text-gray-900 mb-2">
+                      Assistant
+                    </div>
+                    <div className="space-y-2 text-sm text-gray-700 whitespace-pre-line animate-pulse">
+                      Thinking...
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Message Input */}
