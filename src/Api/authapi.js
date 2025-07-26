@@ -50,6 +50,18 @@ export const authapi = createApi({
         body,
       }),
     }),
+    getChatSessions: builder.query({
+      query: () => ({
+        url: "/api/v1/chat/sessions/",
+        method: "GET",
+      }),
+    }),
+    getChatMessages: builder.query({
+      query: (sessionId) => ({
+        url: `/api/v1/chat/sessions/${sessionId}/`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -60,4 +72,6 @@ export const {
   useVerifyOtpMutation,
   useResetPasswordMutation,
   useChatMutation,
+  useGetChatSessionsQuery,
+  useGetChatMessagesQuery,
 } = authapi;

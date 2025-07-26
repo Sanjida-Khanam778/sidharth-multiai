@@ -3,6 +3,7 @@ import { persistStore, persistReducer } from "redux-persist";
 
 import storage from "redux-persist/lib/storage";
 import { api } from "../Api/api";
+import { authapi } from "../Api/authapi";
 import authReducer from "./authSlice";
 
 const persistConfig = {
@@ -12,6 +13,7 @@ const persistConfig = {
 };
 const rootReducer = combineReducers({
   [api.reducerPath]: api.reducer,
+  [authapi.reducerPath]: authapi.reducer,
   auth: authReducer,
 });
 
@@ -23,9 +25,14 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
-        ignoredActionPaths: ["register", "rehydrate", "meta.baseQueryMeta.request", "meta.baseQueryMeta.response"],
+        ignoredActionPaths: [
+          "register",
+          "rehydrate",
+          "meta.baseQueryMeta.request",
+          "meta.baseQueryMeta.response",
+        ],
       },
-    }).concat(api.middleware),
+    }).concat(api.middleware, authapi.middleware),
 });
 
 export const parsistor = persistStore(store);

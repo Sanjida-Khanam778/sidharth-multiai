@@ -3,16 +3,19 @@ import React from "react";
 export default function Sidebar({
   chatHistory,
   handleNewChat,
+  handleChatHistoryClick,
   setCurrentChat,
   onClose,
+  isLoading = false,
 }) {
+  console.log(chatHistory);
   return (
     <div className="w-80 bg-gray-100 border-r border-gray-200 flex flex-col h-full">
       {/* Header with Close Button for Mobile */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 lg:border-b-0">
-        <h2 className="text-lg font-semibold text-gray-800 lg:hidden">
+        {/* <h2 className="text-lg font-semibold text-gray-800 lg:hidden">
           Chat History
-        </h2>
+        </h2> */}
         <button
           onClick={onClose}
           className="lg:hidden text-gray-500 hover:text-gray-700 focus:outline-none"
@@ -46,30 +49,43 @@ export default function Sidebar({
 
       {/* Chat History */}
       <div className="flex-1 overflow-y-auto px-4 pb-4">
-        {Object.entries(chatHistory).map(([period, chats]) => (
-          <div key={period} className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-600 mb-3">
-              {period}
-            </h3>
-            <div className="space-y-2">
-              {chats.map((chat, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    setCurrentChat(chat);
-                    // Close sidebar on mobile when chat is selected
-                    if (onClose) {
-                      onClose();
-                    }
-                  }}
-                  className="w-full text-left text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-200 p-2 rounded transition-colors"
-                >
-                  {chat}
-                </button>
-              ))}
-            </div>
+        {isLoading ? (
+          <div className="flex items-center justify-center h-32">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
           </div>
-        ))}
+        ) : Object.keys(chatHistory).length === 0 ? (
+          <div className="text-center text-gray-500 mt-8">
+            <p>No chat history found</p>
+          </div>
+        ) : (
+          Object.entries(chatHistory).map(([period, chats]) => (
+            <div key={period} className="mb-6">
+              <h3 className="text-sm font-semibold text-gray-600 mb-3">
+                {period}
+              </h3>
+              <div className="space-y-2">
+                {chats.map((chat, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      handleChatHistoryClick(chat.id);
+                      // Close sidebar on mobile when chat is selected
+                      if (onClose) {
+                        onClose();
+                      }
+                    }}
+                    className="w-full text-left text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-200 p-2 rounded transition-colors"
+                  >
+                    <div className="font-medium">{chat.title}</div>
+                    <div className="text-xs text-gray-500">
+                      {chat.totalMessages} messages
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

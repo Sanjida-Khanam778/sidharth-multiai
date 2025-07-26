@@ -30,6 +30,10 @@ export const router = createBrowserRouter([
     element: <DashboardLayout />,
   },
   {
+    path: "/dashboard/:id",
+    element: <DashboardLayout />,
+  },
+  {
     path: "/login",
     element: <SignIn />,
   },

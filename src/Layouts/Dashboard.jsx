@@ -1,34 +1,107 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar/Sidebar";
 import profile from "../assets/images/profile.png";
 import botProfile from "../assets/images/robot.png";
 
-import { useChatMutation } from "../Api/authapi";
+import {
+  useChatMutation,
+  useGetChatSessionsQuery,
+  useGetChatMessagesQuery,
+} from "../Api/authapi";
 
-export default function Dashboard() {
+export default function Dashboard({ sessionId }) {
+  const navigate = useNavigate();
   const [chat, { isLoading }] = useChatMutation();
   const [message, setMessage] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const chatHistory = {
-    Today: [
-      "Proteins in Alzheimer's Disease",
-      "Best biomarkers for lung cancer",
-      "Target discovery for glioblastoma treatment",
-      "Top expressed genes in liver tissues",
-    ],
-    Yesterday: [
-      "Proteins in Alzheimer's Disease",
-      "Best biomarkers for lung cancer",
-      "Target discovery for glioblastoma treatment",
-      "Top expressed genes in liver tissues",
-    ],
-    "Last Week": [
-      "Proteins in Alzheimer's Disease",
-      "Best biomarkers for lung cancer",
-      "Target discovery for glioblastoma treatment",
-      "Top expressed genes in liver tissues",
-    ],
+  const [currentChat, setCurrentChat] = useState(null);
+
+  // Fetch chat sessions
+  const { data: sessionsData, isLoading: sessionsLoading } =
+    useGetChatSessionsQuery();
+
+  // Fetch chat messages for current session
+  const { data: messagesData, isLoading: messagesLoading } =
+    useGetChatMessagesQuery(sessionId, {
+      skip: !sessionId,
+    });
+
+  console.log(sessionsData?.session_id);
+
+  // Function to organize sessions by date
+  const organizeSessionsByDate = (sessions) => {
+    if (!sessions) return {};
+
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const lastWeek = new Date(today);
+    lastWeek.setDate(lastWeek.getDate() - 7);
+
+    const lastMonth = new Date(today);
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+
+    const organized = {
+      Today: [],
+      Yesterday: [],
+      "Last Week": [],
+      "Last Month": [],
+    };
+
+    sessions.forEach((session) => {
+      const sessionDate = new Date(session.created_at);
+      const sessionInfo = {
+        id: session.session_id,
+        title: session.title,
+        totalMessages: session.total_messages,
+      };
+
+      if (sessionDate.toDateString() === today.toDateString()) {
+        organized.Today.push(sessionInfo);
+      } else if (sessionDate.toDateString() === yesterday.toDateString()) {
+        organized.Yesterday.push(sessionInfo);
+      } else if (sessionDate >= lastWeek && sessionDate < yesterday) {
+        organized["Last Week"].push(sessionInfo);
+      } else if (sessionDate >= lastMonth && sessionDate < lastWeek) {
+        organized["Last Month"].push(sessionInfo);
+      }
+    });
+
+    // Remove empty categories
+    Object.keys(organized).forEach((key) => {
+      if (organized[key].length === 0) {
+        delete organized[key];
+      }
+    });
+
+    return organized;
   };
+
+  const chatHistory = organizeSessionsByDate(sessionsData?.sessions);
+
+  // Function to format response text
+  const formatResponseText = (text) => {
+    if (!text) return "";
+
+    // Replace markdown headers with styled divs
+    let formattedText = text
+      .replace(
+        /^##\s*(.+)$/gm,
+        '<div class="text-lg font-bold text-gray-900 mb-2">$1</div>'
+      )
+      .replace(
+        /^#\s*(.+)$/gm,
+        '<div class="text-xl font-bold text-gray-900 mb-3">$1</div>'
+      )
+      .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em class="italic">$1</em>')
+      .replace(/\n/g, "<br>");
+
+    return formattedText;
+  };
+
   // {
   //   type: "user",
   //   content: "What proteins are involved in Alzheimer's disease?",
@@ -36,28 +109,39 @@ export default function Dashboard() {
 
   const [chatMessages, setChatMessages] = useState([]);
 
+  // Load previous messages when sessionId changes
+  useEffect(() => {
+    if (messagesData?.messages) {
+      const formattedMessages = messagesData.messages.map((msg) => ({
+        type: msg.role === "user" ? "user" : "assistant",
+        content:
+          msg.role === "user"
+            ? msg.content
+            : {
+                sources: [
+                  {
+                    name: "Assistant",
+                    data: { content: msg.content },
+                  },
+                ],
+              },
+      }));
+      setChatMessages(formattedMessages);
+    }
+  }, [messagesData]);
+
+  // Function to handle chat history item click
+  const handleChatHistoryClick = (sessionId) => {
+    navigate(`/dashboard/${sessionId}`);
+  };
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (message.trim()) {
       setChatMessages((prev) => [...prev, { type: "user", content: message }]);
       // Add loading bot message with a unique id
       const loadingId = Date.now();
-      setChatMessages((prev) => [
-        ...prev,
-        {
-          type: "assistant",
-          loading: true,
-          id: loadingId,
-          content: {
-            sources: [
-              {
-                name: "Assistant",
-                data: { content: "Thinking..." },
-              },
-            ],
-          },
-        },
-      ]);
+
       try {
         const data = await chat({ input_text: message }).unwrap();
         const sources = [
@@ -66,7 +150,7 @@ export default function Dashboard() {
           { name: "Claude", data: { content: data.responses.claude } },
           { name: "ChatGPT", data: { content: data.responses.chatgpt } },
           { name: "XAI", data: { content: data.responses.xai } },
-          { name: "Deepseek", data: { content: data.responses.deepseek } },
+          { name: "DeepSeek", data: { content: data.responses.deepseek } },
         ];
         setChatMessages((prev) =>
           prev
@@ -100,6 +184,7 @@ export default function Dashboard() {
   const handleNewChat = () => {
     console.log("Starting new chat");
     setChatMessages([]);
+    navigate("/dashboard");
   };
 
   const toggleSidebar = () => {
@@ -110,7 +195,12 @@ export default function Dashboard() {
     <div className="flex h-[89vh] bg-gray-50 relative">
       {/* Sidebar for large screens */}
       <div className="hidden lg:block lg:relative lg:z-0 h-full border ">
-        <Sidebar chatHistory={chatHistory} handleNewChat={handleNewChat} />
+        <Sidebar
+          chatHistory={chatHistory}
+          handleNewChat={handleNewChat}
+          handleChatHistoryClick={handleChatHistoryClick}
+          isLoading={sessionsLoading}
+        />
       </div>
 
       {/* Sidebar for mobile/tablet */}
@@ -128,7 +218,9 @@ export default function Dashboard() {
         <Sidebar
           chatHistory={chatHistory}
           handleNewChat={handleNewChat}
+          handleChatHistoryClick={handleChatHistoryClick}
           onClose={() => setSidebarOpen(false)}
+          isLoading={sessionsLoading}
         />
       </div>
 
@@ -155,55 +247,68 @@ export default function Dashboard() {
             </svg>
           </button>
         </div>
-
         {/* Chat Messages */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {chatMessages?.map((msg, index) => (
-            <div key={index}>
-              {msg.type === "user" ? (
-                <div className="flex justify-end mb-4">
-                  <div className="bg-gray-800 text-white px-4 py-2 rounded-2xl max-w-md">
-                    {msg.content}
-                  </div>
-                  <div className=" w-8 h-8 my-auto rounded-full ml-3">
-                    <img
-                      src={profile}
-                      alt="profile"
-                      className="w-full h-full rounded-full"
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-start space-x-3 mb-6">
-                  <div className="w-8 h-8 bg-gray-800 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden">
-                    <img
-                      src={botProfile}
-                      alt="bot"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-                      {msg.content.sources.map((source, sourceIndex) => (
-                        <div key={sourceIndex} className="p-4">
-                          <div className="font-semibold text-gray-900 mb-2">
-                            {source.name}
-                          </div>
-                          <div
-                            className={`space-y-2 text-sm text-gray-700 whitespace-pre-line ${
-                              msg.loading ? "animate-pulse" : ""
-                            }`}
-                          >
-                            {source.data.content}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
+          {messagesLoading && sessionId ? (
+            <div className="flex items-center justify-center h-32">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+              <span className="ml-2 text-gray-600">
+                Loading chat history...
+              </span>
             </div>
-          ))}
+          ) : (
+            <>
+              {chatMessages?.map((msg, index) => (
+                <div key={index}>
+                  {msg.type === "user" ? (
+                    <div className="flex justify-end mb-4">
+                      <div className="bg-gray-800 text-white px-4 py-2 rounded-2xl max-w-md">
+                        {msg.content}
+                      </div>
+                      <div className=" w-8 h-8 my-auto rounded-full ml-3">
+                        <img
+                          src={profile}
+                          alt="profile"
+                          className="w-full h-full rounded-full"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-start space-x-3 mb-6">
+                      <div className="w-8 h-8 bg-gray-800 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden">
+                        <img
+                          src={botProfile}
+                          alt="bot"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                          {msg.content.sources.map((source, sourceIndex) => (
+                            <div key={sourceIndex} className="p-4">
+                              <div className="font-semibold text-gray-900 mb-2">
+                                {source.name}
+                              </div>
+                              <div
+                                className={`space-y-2 text-sm text-gray-700 ${
+                                  msg.loading ? "animate-pulse" : ""
+                                }`}
+                                dangerouslySetInnerHTML={{
+                                  __html: formatResponseText(
+                                    source.data.content
+                                  ),
+                                }}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </>
+          )}
           {isLoading && (
             <div className="flex items-start space-x-3 mb-6">
               <div className="w-8 h-8 bg-gray-800 rounded-full flex-shrink-0 flex items-center justify-center">

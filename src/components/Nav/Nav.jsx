@@ -8,6 +8,8 @@ const Nav = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef(null);
   const [fullName, setFullName] = useState("Sidhath Kerkar");
+  const [profilePic, setProfilePic] = useState(profile);
+  const fileInputRef = useRef(null);
   // Close modal on outside click
   useEffect(() => {
     function handleClickOutside(event) {
@@ -29,6 +31,21 @@ const Nav = () => {
     toast.success("Profile Updated Successfully");
   };
 
+  const handleProfilePicChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setProfilePic(ev.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  const handleEditClick = (e) => {
+    e.stopPropagation();
+    fileInputRef.current.click();
+  };
+
   return (
     <nav className="bg-white shadow-sm border-b border-gray-100 py-3 sticky top-0 z-50">
       <div className="w-11/12 mx-auto">
@@ -44,9 +61,9 @@ const Nav = () => {
             onClick={() => setIsModalOpen(true)}
           >
             <img
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+              src={profilePic}
               alt="profile"
-              className="w-full h-full rounded-full"
+              className="w-full h-full rounded-full object-cover"
             />
           </div>
         </div>
@@ -84,9 +101,19 @@ const Nav = () => {
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div className="absolute bottom-1 right-1 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                    </div>
+                      <div
+                        className="absolute bottom-1 right-1 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white cursor-pointer group"
+                        onClick={handleEditClick}
+                      >
+                        <Edit2 className="w-4 h-4 text-white group-hover:text-gray-200" />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          ref={fileInputRef}
+                          onChange={handleProfilePicChange}
+                          className="hidden"
+                        />
+                      </div>
                   </div>
                 </div>
               </div>
