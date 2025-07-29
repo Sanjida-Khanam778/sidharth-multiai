@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
 import profile from "../assets/images/profile.png";
 import botProfile from "../assets/images/robot.png";
+import { useSelector } from "react-redux";
+import { selectProfilePicture } from "../Stores/authSlice";
 
 import {
   useGetChatMessagesQuery,
@@ -15,6 +17,7 @@ export default function SessionDashboard() {
   const [message, setMessage] = useState("");
   const [chat, { isLoading: sendingMessage }] = useChatMutation();
   const messagesEndRef = useRef(null);
+  const profilePictureFromRedux = useSelector(selectProfilePicture);
 
   // Fetch chat messages for current session
   const {
@@ -48,6 +51,11 @@ export default function SessionDashboard() {
       )
       .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>')
       .replace(/\*(.+?)\*/g, '<em class="italic">$1</em>')
+      // Format links to be blue and clickable
+      .replace(
+        /(https?:\/\/[^\s]+)/g,
+        '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">$1</a>'
+      )
       .replace(/\n/g, "<br>");
 
     return formattedText;
@@ -190,7 +198,7 @@ export default function SessionDashboard() {
                     </div>
                     <div className=" w-8 h-8 my-auto rounded-full ml-3">
                       <img
-                        src={profile}
+                        src={profilePictureFromRedux || profile}
                         alt="profile"
                         className="w-full h-full rounded-full"
                       />

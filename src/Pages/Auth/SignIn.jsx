@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import logo from "../../assets/images/logo.png";
 import robot from "../../assets/images/robot.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,8 +6,9 @@ import { useDispatch } from "react-redux";
 import { setCredentials } from "../../Stores/authSlice";
 import { useLoginMutation } from "../../Api/authapi";
 import toast from "react-hot-toast";
+import { AuthContext } from "../../Provider/AuthProvider";
 
-export default function SignInForm() {
+export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,12 +16,13 @@ export default function SignInForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [login, { isLoading }] = useLoginMutation();
+  const { handleGoogleLogin } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const result = await login({ username:email, password }).unwrap();
+      const result = await login({ username: email, password }).unwrap();
       dispatch(
         setCredentials({
           access: result.access,
@@ -39,13 +41,47 @@ export default function SignInForm() {
       const errorMsg =
         error?.data?.non_field_errors?.[0] ||
         error?.data?.message ||
-        error?.error
-      if (errorMsg === "Invalid credentials") {
+        error?.error;
+      if (errorMsg) {
         toast.error(errorMsg);
       }
     }
   };
-
+  const handleSocialLogin = () => {
+    handleGoogleLogin().then(async (res) => {
+      console.log(res);
+      try {
+        const result = await login({
+          username: res.user.email,
+          password: res.user.uid,
+        }).unwrap();
+        dispatch(
+          setCredentials({
+            access: result.access,
+            refresh: result.refresh,
+            user: { email: res.user.email, fullName: res.user.displayName },
+            profilePicture: res.user.photoURL,
+          })
+        );
+        console.log("Sign in successful with:", {
+          email: res.user.email,
+          fullName: res.user.displayName,
+          password: res.user.uid,
+          rememberMe,
+          result,
+        });
+        navigate("/");
+      } catch (error) {
+        const errorMsg =
+          error?.data?.non_field_errors?.[0] ||
+          error?.data?.message ||
+          error?.error;
+        if (errorMsg) {
+          toast.error(errorMsg);
+        }
+      }
+    });
+  };
   return (
     <div className="min-h-screen flex flex-col lg:flex-row font-manrope">
       {/* Logo - Mobile */}
@@ -81,8 +117,6 @@ export default function SignInForm() {
               </Link>
             </p>
           </div>
-
-       
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-6">
@@ -190,6 +224,7 @@ export default function SignInForm() {
 
             {/* Google Sign In */}
             <button
+              onClick={handleSocialLogin}
               type="button"
               className="w-full bg-white border border-gray-300 text-gray-700 py-2 sm:py-3 px-4 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base"
             >

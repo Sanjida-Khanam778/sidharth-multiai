@@ -4,11 +4,23 @@ import { Link } from "react-router-dom";
 import { X, Edit2 } from "lucide-react";
 import profile from "../../assets/images/profile.png";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import {
+  selectProfilePicture,
+  selectUser,
+  selectFullName,
+} from "../../Stores/authSlice";
 const Nav = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef(null);
-  const [fullName, setFullName] = useState("Sidhath Kerkar");
-  const [profilePic, setProfilePic] = useState(profile);
+  const [fullName, setFullName] = useState("");
+  const profilePictureFromRedux = useSelector(selectProfilePicture);
+  const userFromRedux = useSelector(selectUser);
+  const fullNameFromRedux = useSelector(selectFullName);
+  console.log("Full Name from Redux:", fullNameFromRedux);
+  const [profilePic, setProfilePic] = useState(
+    profilePictureFromRedux || profile
+  );
   const fileInputRef = useRef(null);
   // Close modal on outside click
   useEffect(() => {
@@ -26,6 +38,24 @@ const Nav = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isModalOpen]);
+
+  // Update profilePic when Redux state changes
+  useEffect(() => {
+    if (profilePictureFromRedux) {
+      setProfilePic(profilePictureFromRedux);
+    }
+  }, [profilePictureFromRedux]);
+
+  // Update fullName when user data changes
+  useEffect(() => {
+    console.log("User from Redux:", userFromRedux);
+    console.log("Full Name from Redux:", fullNameFromRedux);
+    if (fullNameFromRedux) {
+      setFullName(fullNameFromRedux);
+    } else {
+      setFullName(""); // Clear name if no fullName
+    }
+  }, [fullNameFromRedux]);
 
   const handleUpdate = () => {
     toast.success("Profile Updated Successfully");
@@ -61,6 +91,7 @@ const Nav = () => {
             onClick={() => setIsModalOpen(true)}
           >
             <img
+              referrerPolicy="no-referrer"
               src={profilePic}
               alt="profile"
               className="w-full h-full rounded-full object-cover"
@@ -94,26 +125,24 @@ const Nav = () => {
                   <div className="relative">
                     <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white">
                       <img
-                        src={
-                          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
-                        }
+                        src={profilePic}
                         alt="Profile"
                         className="w-full h-full object-cover"
                       />
                     </div>
-                      <div
-                        className="absolute bottom-1 right-1 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white cursor-pointer group"
-                        onClick={handleEditClick}
-                      >
-                        <Edit2 className="w-4 h-4 text-white group-hover:text-gray-200" />
-                        <input
-                          type="file"
-                          accept="image/*"
-                          ref={fileInputRef}
-                          onChange={handleProfilePicChange}
-                          className="hidden"
-                        />
-                      </div>
+                    <div
+                      className="absolute bottom-1 right-1 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white cursor-pointer group"
+                      onClick={handleEditClick}
+                    >
+                      <Edit2 className="w-4 h-4 text-white group-hover:text-gray-200" />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        onChange={handleProfilePicChange}
+                        className="hidden"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -122,7 +151,7 @@ const Nav = () => {
               <div className="px-6 pt-16 pb-8 text-center bg-white">
                 {/* Name and Title */}
                 <h2 className="text-xl font-medium text-gray-900 mb-1">
-                  Sidhath Kerkar
+                  {fullName}
                 </h2>
                 <p className="text-gray-500 text-sm mb-8"></p>
 
@@ -137,7 +166,7 @@ const Nav = () => {
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10 text-gray-900"
-                      placeholder="Enter your full name"
+                      placeholder={userFromRedux?.fullName || "Full name"}
                     />
                     <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                       <Edit2 size={16} />

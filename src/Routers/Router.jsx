@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import SignIn from "../Pages/Auth/SignIn";
 import SignUp from "../Pages/Auth/SignUp";
 import Home from "../Pages/Home/Home";
-import Features from "../components/Features/Features";
 import ForgetPass from "../components/ForgetPass/ForgetPass";
 import VarifyOTP from "../components/VarifyOTP/VarifyOTP";
 import ResetPass from "../components/ResetPass/ResetPass";

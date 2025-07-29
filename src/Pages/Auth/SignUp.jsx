@@ -57,9 +57,10 @@ export default function SignUp() {
   };
 
   const handleSocialLogin = () => {
-    handleGoogleLogin()                 
-      .then(async(res) => {
-      console.log(res);
+    handleGoogleLogin()
+      .then(async (res) => {
+        console.log(res);
+        try {
           const result = await register({
             full_name: res.user.displayName,
             email: res.user.email,
@@ -69,22 +70,31 @@ export default function SignUp() {
             setCredentials({
               access: result.access,
               refresh: result.refresh,
-              user: { email, fullName },
+              user: { email: res.user.email, fullName: res.user.displayName },
+              profilePicture: res.user.photoURL,
             })
           );
           console.log("Sign up successful with:", {
-            fullName,
-            email,
-            password,
+            fullName: res.user.displayName,
+            email: res.user.email,
+            password: res.user.uid,
             rememberMe,
             result,
           });
           navigate("/");
-        })
-        .catch((err) => {
-          console.error(err.message);
-        });
-  }
+        } catch (error) {
+          const errorMsg =
+            error?.data?.message ||
+            error?.error ||
+            "Registration failed. Please try again.";
+          toast.error(errorMsg);
+        }
+      })
+      .catch((err) => {
+        console.error(err.message);
+        toast.error("Google login failed. Please try again.");
+      });
+  };
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row font-manrope">
