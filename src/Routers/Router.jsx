@@ -7,8 +7,10 @@ import ForgetPass from "../components/ForgetPass/ForgetPass";
 import VarifyOTP from "../components/VarifyOTP/VarifyOTP";
 import ResetPass from "../components/ResetPass/ResetPass";
 import Dashboard from "../Layouts/Dashboard";
+import SessionDashboard from "../Layouts/SessionDashboard";
 import DashboardLayout from "../Layouts/DashboardLayout";
 import SuccessMsg from "../components/SuccessMsg/SuccessMsg";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -28,10 +30,16 @@ export const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <DashboardLayout />,
-  },
-  {
-    path: "/dashboard/:id",
-    element: <DashboardLayout />,
+    children: [
+      {
+        path: "",
+        element: <Dashboard />,
+      },
+      {
+        path: ":id",
+        element: <SessionDashboard />,
+      },
+    ],
   },
   {
     path: "/login",

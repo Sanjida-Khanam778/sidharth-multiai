@@ -4,7 +4,7 @@ import baseQuery from "./baseQuery";
 export const authapi = createApi({
   reducerPath: "authApi",
   baseQuery: baseQuery,
-  tagTypes: ["users"],
+  tagTypes: ["users", "chatSessions"],
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (body) => ({
@@ -49,18 +49,23 @@ export const authapi = createApi({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["chatSessions"],
     }),
     getChatSessions: builder.query({
       query: () => ({
         url: "/api/v1/chat/sessions/",
         method: "GET",
       }),
+      providesTags: ["chatSessions"],
     }),
     getChatMessages: builder.query({
       query: (sessionId) => ({
         url: `/api/v1/chat/sessions/${sessionId}/`,
         method: "GET",
       }),
+      providesTags: (result, error, sessionId) => [
+        { type: "chatSessions", id: sessionId },
+      ],
     }),
   }),
 });

@@ -1,85 +1,20 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Sidebar from "../components/Sidebar/Sidebar";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import profile from "../assets/images/profile.png";
 import botProfile from "../assets/images/robot.png";
 
-import {
-  useChatMutation,
-  useGetChatSessionsQuery,
-  useGetChatMessagesQuery,
-} from "../Api/authapi";
+import { useChatMutation, useGetChatSessionsQuery } from "../Api/authapi";
 
-export default function Dashboard({ sessionId }) {
+// Component for new chat (no session ID)
+export default function Dashboard() {
   const navigate = useNavigate();
   const [chat, { isLoading }] = useChatMutation();
   const [message, setMessage] = useState("");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [currentChat, setCurrentChat] = useState(null);
+  const [chatMessages, setChatMessages] = useState([]);
+  const messagesEndRef = useRef(null);
 
-  // Fetch chat sessions
-  const { data: sessionsData, isLoading: sessionsLoading } =
-    useGetChatSessionsQuery();
-
-  // Fetch chat messages for current session
-  const { data: messagesData, isLoading: messagesLoading } =
-    useGetChatMessagesQuery(sessionId, {
-      skip: !sessionId,
-    });
-
-  console.log(sessionsData?.session_id);
-
-  // Function to organize sessions by date
-  const organizeSessionsByDate = (sessions) => {
-    if (!sessions) return {};
-
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    const lastWeek = new Date(today);
-    lastWeek.setDate(lastWeek.getDate() - 7);
-
-    const lastMonth = new Date(today);
-    lastMonth.setMonth(lastMonth.getMonth() - 1);
-
-    const organized = {
-      Today: [],
-      Yesterday: [],
-      "Last Week": [],
-      "Last Month": [],
-    };
-
-    sessions.forEach((session) => {
-      const sessionDate = new Date(session.created_at);
-      const sessionInfo = {
-        id: session.session_id,
-        title: session.title,
-        totalMessages: session.total_messages,
-      };
-
-      if (sessionDate.toDateString() === today.toDateString()) {
-        organized.Today.push(sessionInfo);
-      } else if (sessionDate.toDateString() === yesterday.toDateString()) {
-        organized.Yesterday.push(sessionInfo);
-      } else if (sessionDate >= lastWeek && sessionDate < yesterday) {
-        organized["Last Week"].push(sessionInfo);
-      } else if (sessionDate >= lastMonth && sessionDate < lastWeek) {
-        organized["Last Month"].push(sessionInfo);
-      }
-    });
-
-    // Remove empty categories
-    Object.keys(organized).forEach((key) => {
-      if (organized[key].length === 0) {
-        delete organized[key];
-      }
-    });
-
-    return organized;
-  };
-
-  const chatHistory = organizeSessionsByDate(sessionsData?.sessions);
+  // Get sessions query to trigger refetch
+  const { refetch: refetchSessions } = useGetChatSessionsQuery();
 
   // Function to format response text
   const formatResponseText = (text) => {
@@ -102,48 +37,33 @@ export default function Dashboard({ sessionId }) {
     return formattedText;
   };
 
-  // {
-  //   type: "user",
-  //   content: "What proteins are involved in Alzheimer's disease?",
-  // }
-
-  const [chatMessages, setChatMessages] = useState([]);
-
-  // Load previous messages when sessionId changes
-  useEffect(() => {
-    if (messagesData?.messages) {
-      const formattedMessages = messagesData.messages.map((msg) => ({
-        type: msg.role === "user" ? "user" : "assistant",
-        content:
-          msg.role === "user"
-            ? msg.content
-            : {
-                sources: [
-                  {
-                    name: "Assistant",
-                    data: { content: msg.content },
-                  },
-                ],
-              },
-      }));
-      setChatMessages(formattedMessages);
-    }
-  }, [messagesData]);
-
-  // Function to handle chat history item click
-  const handleChatHistoryClick = (sessionId) => {
-    navigate(`/dashboard/${sessionId}`);
-  };
-
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (message.trim()) {
-      setChatMessages((prev) => [...prev, { type: "user", content: message }]);
-      // Add loading bot message with a unique id
-      const loadingId = Date.now();
+      const userMessage = message.trim();
+
+      // Add user message immediately to UI (optimistic update)
+      setChatMessages((prev) => [
+        ...prev,
+        { type: "user", content: userMessage },
+      ]);
+
+      // Clear the input immediately
+      setMessage("");
 
       try {
-        const data = await chat({ input_text: message }).unwrap();
+        // For new chat, only send input_text
+        const data = await chat({ input_text: userMessage }).unwrap();
+
+        // Navigate to the session page with the session_id from response
+        if (data.session_id) {
+          // Refetch sessions to update sidebar
+          refetchSessions();
+          navigate(`/dashboard/${data.session_id}`);
+          return; // Don't save the response, just navigate
+        }
+
+        // Fallback if no session_id (shouldn't happen)
         const sources = [
           { name: "Mistral", data: { content: data.responses.mistral } },
           { name: "Gemini", data: { content: data.responses.gemini } },
@@ -153,87 +73,162 @@ export default function Dashboard({ sessionId }) {
           { name: "DeepSeek", data: { content: data.responses.deepseek } },
         ];
         setChatMessages((prev) =>
-          prev
-            .filter((msg) => !(msg.loading && msg.id === loadingId))
-            .concat({
-              type: "assistant",
-              content: { sources },
-            })
+          prev.concat({
+            type: "assistant",
+            content: { sources },
+          })
         );
       } catch (err) {
         setChatMessages((prev) =>
-          prev
-            .filter((msg) => !(msg.loading && msg.id === loadingId))
-            .concat({
-              type: "assistant",
-              content: {
-                sources: [
-                  {
-                    name: "Error",
-                    data: { content: "Failed to fetch response." },
-                  },
-                ],
-              },
-            })
+          prev.concat({
+            type: "assistant",
+            content: {
+              sources: [
+                {
+                  name: "Error",
+                  data: { content: "Failed to fetch response." },
+                },
+              ],
+            },
+          })
+        );
+        // Remove the optimistic user message if there was an error
+        setChatMessages((prev) =>
+          prev.filter(
+            (msg) => !(msg.type === "user" && msg.content === userMessage)
+          )
         );
       }
-      setMessage("");
     }
   };
 
-  const handleNewChat = () => {
-    console.log("Starting new chat");
-    setChatMessages([]);
-    navigate("/dashboard");
-  };
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
 
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+    // This function is now handled by the static sidebar
   };
 
   return (
-    <div className="flex h-[89vh] bg-gray-50 relative">
-      {/* Sidebar for large screens */}
-      <div className="hidden lg:block lg:relative lg:z-0 h-full border ">
-        <Sidebar
-          chatHistory={chatHistory}
-          handleNewChat={handleNewChat}
-          handleChatHistoryClick={handleChatHistoryClick}
-          isLoading={sessionsLoading}
-        />
-      </div>
-
-      {/* Sidebar for mobile/tablet */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+    <div className="flex-1 flex flex-col">
+      {/* Header with Hamburger Menu */}
+      <div className="bg-white border-b border-gray-200 p-4 lg:hidden">
+        <button
           onClick={toggleSidebar}
-        />
-      )}
-      <div
-        className={`fixed z-50 h-full w-80 transition-transform duration-300 ease-in-out lg:hidden ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <Sidebar
-          chatHistory={chatHistory}
-          handleNewChat={handleNewChat}
-          handleChatHistoryClick={handleChatHistoryClick}
-          onClose={() => setSidebarOpen(false)}
-          isLoading={sessionsLoading}
-        />
+          className="text-gray-600 hover:text-gray-900 focus:outline-none focus:text-gray-900"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
       </div>
 
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col w-10/12">
-        {/* Header with Hamburger Menu */}
-        <div className="bg-white border-b border-gray-200 p-4 lg:hidden">
+      {/* Chat Messages */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        {chatMessages?.map((msg, index) => (
+          <div key={index}>
+            {msg.type === "user" ? (
+              <div className="flex justify-end mb-4">
+                <div className="bg-gray-800 text-white px-4 py-2 rounded-2xl max-w-md">
+                  {msg.content}
+                </div>
+                <div className=" w-8 h-8 my-auto rounded-full ml-3">
+                  <img
+                    src={profile}
+                    alt="profile"
+                    className="w-full h-full rounded-full"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-start space-x-3 mb-6">
+                <div className="w-8 h-8 bg-gray-800 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden">
+                  <img
+                    src={botProfile}
+                    alt="bot"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-1">
+                  <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                    {msg.content.sources.map((source, sourceIndex) => (
+                      <div key={sourceIndex} className="p-4">
+                        <div className="font-semibold text-gray-900 mb-2">
+                          {source.name}
+                        </div>
+                        <div
+                          className={`space-y-2 text-sm text-gray-700 ${
+                            msg.loading ? "animate-pulse" : ""
+                          }`}
+                          dangerouslySetInnerHTML={{
+                            __html: formatResponseText(source.data.content),
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+        {isLoading && (
+          <div className="flex items-start space-x-3 mb-6">
+            <div className="w-8 h-8 bg-gray-800 rounded-full flex-shrink-0 flex items-center justify-center">
+              <div className="w-4 h-4 bg-white rounded-sm"></div>
+            </div>
+            <div className="flex-1">
+              <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                <div className="p-4">
+                  <div className="font-semibold text-gray-900 mb-2">
+                    Assistant
+                  </div>
+                  <div className="space-y-2 text-sm text-gray-700 whitespace-pre-line animate-pulse">
+                    Thinking...
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Invisible div for scrolling to bottom */}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Message Input */}
+      <div className="border-t border-gray-200 p-4">
+        <form
+          onSubmit={handleSendMessage}
+          className="flex items-center space-x-3"
+        >
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Enter your biomedical query here..."
+              className="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
           <button
-            onClick={toggleSidebar}
-            className="text-gray-600 hover:text-gray-900 focus:outline-none focus:text-gray-900"
+            type="submit"
+            className="bg-gray-800 hover:bg-gray-900 text-white p-3 rounded-full transition-colors"
           >
             <svg
-              className="w-6 h-6"
+              className="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -242,129 +237,11 @@ export default function Dashboard({ sessionId }) {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
               />
             </svg>
           </button>
-        </div>
-        {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {messagesLoading && sessionId ? (
-            <div className="flex items-center justify-center h-32">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-              <span className="ml-2 text-gray-600">
-                Loading chat history...
-              </span>
-            </div>
-          ) : (
-            <>
-              {chatMessages?.map((msg, index) => (
-                <div key={index}>
-                  {msg.type === "user" ? (
-                    <div className="flex justify-end mb-4">
-                      <div className="bg-gray-800 text-white px-4 py-2 rounded-2xl max-w-md">
-                        {msg.content}
-                      </div>
-                      <div className=" w-8 h-8 my-auto rounded-full ml-3">
-                        <img
-                          src={profile}
-                          alt="profile"
-                          className="w-full h-full rounded-full"
-                        />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-start space-x-3 mb-6">
-                      <div className="w-8 h-8 bg-gray-800 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden">
-                        <img
-                          src={botProfile}
-                          alt="bot"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-                          {msg.content.sources.map((source, sourceIndex) => (
-                            <div key={sourceIndex} className="p-4">
-                              <div className="font-semibold text-gray-900 mb-2">
-                                {source.name}
-                              </div>
-                              <div
-                                className={`space-y-2 text-sm text-gray-700 ${
-                                  msg.loading ? "animate-pulse" : ""
-                                }`}
-                                dangerouslySetInnerHTML={{
-                                  __html: formatResponseText(
-                                    source.data.content
-                                  ),
-                                }}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </>
-          )}
-          {isLoading && (
-            <div className="flex items-start space-x-3 mb-6">
-              <div className="w-8 h-8 bg-gray-800 rounded-full flex-shrink-0 flex items-center justify-center">
-                <div className="w-4 h-4 bg-white rounded-sm"></div>
-              </div>
-              <div className="flex-1">
-                <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-                  <div className="p-4">
-                    <div className="font-semibold text-gray-900 mb-2">
-                      Assistant
-                    </div>
-                    <div className="space-y-2 text-sm text-gray-700 whitespace-pre-line animate-pulse">
-                      Thinking...
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Message Input */}
-        <div className="border-t border-gray-200 p-4">
-          <form
-            onSubmit={handleSendMessage}
-            className="flex items-center space-x-3"
-          >
-            <div className="flex-1 relative">
-              <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Enter your biomedical query here..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-            <button
-              type="submit"
-              className="bg-gray-800 hover:bg-gray-900 text-white p-3 rounded-full transition-colors"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                />
-              </svg>
-            </button>
-          </form>
-        </div>
+        </form>
       </div>
     </div>
   );

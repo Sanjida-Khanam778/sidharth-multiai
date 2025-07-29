@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import logo from "../../assets/images/logo.png";
 import robot from "../../assets/images/robot.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,8 +7,11 @@ import { useDispatch } from "react-redux";
 import { useRegisterMutation } from "../../Api/authapi";
 import { setCredentials } from "../../Stores/authSlice";
 import toast from "react-hot-toast";
+import { AuthContext } from "../../Provider/AuthProvider";
 
 export default function SignUp() {
+  const { handleGoogleLogin } = useContext(AuthContext);
+
   const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -52,6 +55,36 @@ export default function SignUp() {
       }
     }
   };
+
+  const handleSocialLogin = () => {
+    handleGoogleLogin()                 
+      .then(async(res) => {
+      console.log(res);
+          const result = await register({
+            full_name: res.user.displayName,
+            email: res.user.email,
+            password: res.user.uid,
+          }).unwrap();
+          dispatch(
+            setCredentials({
+              access: result.access,
+              refresh: result.refresh,
+              user: { email, fullName },
+            })
+          );
+          console.log("Sign up successful with:", {
+            fullName,
+            email,
+            password,
+            rememberMe,
+            result,
+          });
+          navigate("/");
+        })
+        .catch((err) => {
+          console.error(err.message);
+        });
+  }
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row font-manrope">
@@ -101,6 +134,7 @@ export default function SignUp() {
           </div>
 
           <button
+            onClick={handleSocialLogin}
             type="button"
             className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors mb-6 text-sm sm:text-base"
           >
