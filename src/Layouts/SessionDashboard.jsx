@@ -9,6 +9,7 @@ import {
   useGetChatMessagesQuery,
   useChatMutation,
   useGetChatSessionsQuery,
+  useGetUserProfileQuery,
 } from "../Api/authapi";
 
 // Component for existing chat session (with session ID)
@@ -18,6 +19,11 @@ export default function SessionDashboard() {
   const [chat, { isLoading: sendingMessage }] = useChatMutation();
   const messagesEndRef = useRef(null);
   const profilePictureFromRedux = useSelector(selectProfilePicture);
+
+  // Fetch user profile data for profile picture
+  const { data: userProfileData } = useGetUserProfileQuery(undefined, {
+    skip: !sessionId,
+  });
 
   // Fetch chat messages for current session
   const {
@@ -41,13 +47,25 @@ export default function SessionDashboard() {
 
     // Replace markdown headers with styled divs
     let formattedText = text
+      // Handle #### headers (h4) - must come first to avoid conflicts
       .replace(
-        /^##\s*(.+)$/gm,
-        '<div class="text-lg font-bold text-gray-900 mb-2">$1</div>'
+        /^####\s+(.+)$/gm,
+        '<div class="text-sm font-bold text-gray-900 mb-1 mt-2">$1</div>'
       )
+      // Handle ### headers (h3)
       .replace(
-        /^#\s*(.+)$/gm,
-        '<div class="text-xl font-bold text-gray-900 mb-3">$1</div>'
+        /^###\s+(.+)$/gm,
+        '<div class="text-md font-bold text-gray-900 mb-2 mt-3">$1</div>'
+      )
+      // Handle ## headers (h2)
+      .replace(
+        /^##\s+(.+)$/gm,
+        '<div class="text-lg font-bold text-gray-900 mb-2 mt-4">$1</div>'
+      )
+      // Handle # headers (h1) - must come last to avoid conflicts
+      .replace(
+        /^#\s+(.+)$/gm,
+        '<div class="text-xl font-bold text-gray-900 mb-3 mt-4">$1</div>'
       )
       .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>')
       .replace(/\*(.+?)\*/g, '<em class="italic">$1</em>')
@@ -198,7 +216,11 @@ export default function SessionDashboard() {
                     </div>
                     <div className=" w-8 h-8 my-auto rounded-full ml-3">
                       <img
-                        src={profilePictureFromRedux || profile}
+                        src={
+                          userProfileData?.profile_picture ||
+                          profilePictureFromRedux ||
+                          profile
+                        }
                         alt="profile"
                         className="w-full h-full rounded-full"
                       />

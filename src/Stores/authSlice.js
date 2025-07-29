@@ -52,3 +52,5 @@ export const selectUser = (state) => state.auth.user;
 export const selectEmail = (state) => state.auth.email;
 export const selectProfilePicture = (state) => state.auth.profilePicture;
 export const selectFullName = (state) => state.auth.user?.fullName || "";
+export const selectAccessToken = (state) => state.auth.access;
+export const selectRefreshToken = (state) => state.auth.refresh;

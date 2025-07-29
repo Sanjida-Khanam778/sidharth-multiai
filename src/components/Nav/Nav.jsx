@@ -4,12 +4,20 @@ import { Link } from "react-router-dom";
 import { X, Edit2 } from "lucide-react";
 import profile from "../../assets/images/profile.png";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   selectProfilePicture,
   selectUser,
   selectFullName,
+  setCredentials,
+  selectIsAuthenticated,
+  selectAccessToken,
+  selectRefreshToken,
 } from "../../Stores/authSlice";
+import {
+  useUpdateProfileMutation,
+  useGetUserProfileQuery,
+} from "../../Api/authapi";
 const Nav = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef(null);
@@ -22,6 +30,19 @@ const Nav = () => {
     profilePictureFromRedux || profile
   );
   const fileInputRef = useRef(null);
+  const dispatch = useDispatch();
+  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
+
+  // Get current auth state
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const currentAccessToken = useSelector(selectAccessToken);
+  const currentRefreshToken = useSelector(selectRefreshToken);
+
+  // Fetch user profile data
+  const { data: userProfileData, refetch: refetchUserProfile } =
+    useGetUserProfileQuery(undefined, {
+      skip: !isAuthenticated,
+    });
   // Close modal on outside click
   useEffect(() => {
     function handleClickOutside(event) {
@@ -39,26 +60,67 @@ const Nav = () => {
     };
   }, [isModalOpen]);
 
-  // Update profilePic when Redux state changes
+  // Update profilePic when user profile data changes
   useEffect(() => {
-    if (profilePictureFromRedux) {
-      setProfilePic(profilePictureFromRedux);
+    if (userProfileData?.profile_picture) {
+      setProfilePic(userProfileData.profile_picture);
+    } else {
+      setProfilePic(profile); // Use default profile picture
     }
-  }, [profilePictureFromRedux]);
+  }, [userProfileData]);
 
-  // Update fullName when user data changes
+  // Update fullName when user profile data changes
   useEffect(() => {
-    console.log("User from Redux:", userFromRedux);
-    console.log("Full Name from Redux:", fullNameFromRedux);
-    if (fullNameFromRedux) {
-      setFullName(fullNameFromRedux);
+    console.log("User Profile Data:", userProfileData);
+    if (userProfileData?.full_name) {
+      setFullName(userProfileData.full_name);
     } else {
       setFullName(""); // Clear name if no fullName
     }
-  }, [fullNameFromRedux]);
+  }, [userProfileData]);
 
-  const handleUpdate = () => {
-    toast.success("Profile Updated Successfully");
+  const handleUpdate = async () => {
+    try {
+      const formData = new FormData();
+
+      // Add full name to form data
+      if (fullName && fullName.trim()) {
+        formData.append("full_name", fullName.trim());
+      }
+
+      // Add profile picture to form data if it's a file
+      if (
+        profilePic &&
+        profilePic !== profile &&
+        profilePic !== profilePictureFromRedux
+      ) {
+        // If profilePic is a data URL (from file upload), convert it to a file
+        if (profilePic.startsWith("data:")) {
+          const response = await fetch(profilePic);
+          const blob = await response.blob();
+          formData.append("profile_picture", blob, "profile.jpg");
+        }
+      }
+
+      const result = await updateProfile(formData).unwrap();
+
+      // Only update the user data, preserve existing tokens
+      // The API might not return tokens, so we keep the existing ones
+      const updatedUser = {
+        ...userFromRedux,
+        fullName: fullName.trim(),
+      };
+
+      // Refetch user profile to get updated data
+      refetchUserProfile();
+
+      toast.success("Profile Updated Successfully");
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Profile update failed:", error);
+      const errorMsg = error?.data?.message || "Failed to update profile";
+      toast.error(errorMsg);
+    }
   };
 
   const handleProfilePicChange = (e) => {
@@ -166,7 +228,7 @@ const Nav = () => {
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10 text-gray-900"
-                      placeholder={userFromRedux?.fullName || "Full name"}
+                      placeholder={userProfileData?.full_name || "Full name"}
                     />
                     <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                       <Edit2 size={16} />
@@ -177,9 +239,14 @@ const Nav = () => {
                 {/* Update Button */}
                 <button
                   onClick={handleUpdate}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3.5 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  disabled={isUpdating}
+                  className={`w-full font-medium py-3.5 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                    isUpdating
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-500 hover:bg-blue-600 text-white"
+                  }`}
                 >
-                  Update Profile
+                  {isUpdating ? "Updating..." : "Update Profile"}
                 </button>
               </div>
             </div>

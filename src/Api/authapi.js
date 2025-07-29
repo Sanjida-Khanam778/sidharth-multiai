@@ -67,6 +67,20 @@ export const authapi = createApi({
         { type: "chatSessions", id: sessionId },
       ],
     }),
+    updateProfile: builder.mutation({
+      query: (formData) => ({
+        url: "/api/v1/profile/",
+        method: "PUT",
+        body: formData,
+        // Don't set Content-Type header, let the browser set it for FormData
+      }),
+    }),
+    getUserProfile: builder.query({
+      query: () => ({
+        url: "/api/v1/user-profile/",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -79,4 +93,6 @@ export const {
   useChatMutation,
   useGetChatSessionsQuery,
   useGetChatMessagesQuery,
+  useUpdateProfileMutation,
+  useGetUserProfileQuery,
 } = authapi;
