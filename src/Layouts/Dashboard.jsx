@@ -1,14 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import profile from "../assets/images/profile.png";
 import botProfile from "../assets/images/robot.png";
-import { useSelector } from "react-redux";
-import { selectProfilePicture } from "../Stores/authSlice";
 
 import {
   useChatMutation,
   useGetChatSessionsQuery,
-  useGetUserProfileQuery,
 } from "../Api/authapi";
 
 // Component for new chat (no session ID)
@@ -18,13 +15,11 @@ export default function Dashboard() {
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const messagesEndRef = useRef(null);
-  const profilePictureFromRedux = useSelector(selectProfilePicture);
 
   // Get sessions query to trigger refetch
   const { refetch: refetchSessions } = useGetChatSessionsQuery();
 
   // Fetch user profile data for profile picture
-  const { data: userProfileData } = useGetUserProfileQuery();
 
   // Function to format response text
   const formatResponseText = (text) => {
@@ -174,8 +169,7 @@ export default function Dashboard() {
                 <div className=" w-8 h-8 my-auto rounded-full ml-3">
                   <img
                     src={
-                      userProfileData?.profile_picture ||
-                      profilePictureFromRedux ||
+                
                       profile
                     }
                     alt="profile"

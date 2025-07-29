@@ -2,14 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
 import profile from "../assets/images/profile.png";
 import botProfile from "../assets/images/robot.png";
-import { useSelector } from "react-redux";
-import { selectProfilePicture } from "../Stores/authSlice";
 
 import {
   useGetChatMessagesQuery,
   useChatMutation,
   useGetChatSessionsQuery,
-  useGetUserProfileQuery,
 } from "../Api/authapi";
 
 // Component for existing chat session (with session ID)
@@ -18,12 +15,6 @@ export default function SessionDashboard() {
   const [message, setMessage] = useState("");
   const [chat, { isLoading: sendingMessage }] = useChatMutation();
   const messagesEndRef = useRef(null);
-  const profilePictureFromRedux = useSelector(selectProfilePicture);
-
-  // Fetch user profile data for profile picture
-  const { data: userProfileData } = useGetUserProfileQuery(undefined, {
-    skip: !sessionId,
-  });
 
   // Fetch chat messages for current session
   const {
@@ -216,11 +207,7 @@ export default function SessionDashboard() {
                     </div>
                     <div className=" w-8 h-8 my-auto rounded-full ml-3">
                       <img
-                        src={
-                          userProfileData?.profile_picture ||
-                          profilePictureFromRedux ||
-                          profile
-                        }
+                        src={profile}
                         alt="profile"
                         className="w-full h-full rounded-full"
                       />
@@ -228,12 +215,8 @@ export default function SessionDashboard() {
                   </div>
                 ) : (
                   <div className="flex items-start space-x-3 mb-6">
-                    <div className="w-8 h-8 bg-gray-800 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden">
-                      <img
-                        src={botProfile}
-                        alt="bot"
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="w-8 h-8 bg-gray-800 rounded-full flex-shrink-0 flex items-center justify-center">
+                      <div className="w-4 h-4 bg-white rounded-sm"></div>
                     </div>
                     <div className="flex-1">
                       <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
