@@ -9,6 +9,7 @@ import Dashboard from "../Layouts/Dashboard";
 import SessionDashboard from "../Layouts/SessionDashboard";
 import DashboardLayout from "../Layouts/DashboardLayout";
 import SuccessMsg from "../components/SuccessMsg/SuccessMsg";
+import { PrivateRoute } from "./PrivetRoute";
 
 export const router = createBrowserRouter([
   {
@@ -19,24 +20,24 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
-      },
-      // {
-      //   path: "/features",
-      //   element: <Features />,
-      // },
+      }
     ],
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
-        path: "",
-        element: <Dashboard />,
+        path: "/dashboard",
+        element: <PrivateRoute><Dashboard /></PrivateRoute>,
       },
       {
         path: ":id",
-        element: <SessionDashboard />,
+        element: <PrivateRoute><SessionDashboard /></PrivateRoute>,
       },
     ],
   },
