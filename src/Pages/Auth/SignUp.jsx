@@ -30,21 +30,9 @@ export default function SignUp() {
         email,
         password,
       }).unwrap();
-      dispatch(
-        setCredentials({
-          access: result.access,
-          refresh: result.refresh,
-          user: { email, fullName },
-        })
-      );
-      console.log("Sign up successful with:", {
-        fullName,
-        email,
-        password,
-        rememberMe,
-        result,
-      });
-      navigate("/");
+      toast.success(result.message || "Registration successful!");
+      console.log(result);
+      navigate("/login");
     } catch (error) {
       const errorMsg =
         error?.data?.message ||
@@ -66,22 +54,16 @@ export default function SignUp() {
             email: res.user.email,
             password: res.user.uid,
           }).unwrap();
-          dispatch(
-            setCredentials({
-              access: result.access,
-              refresh: result.refresh,
-              user: { email: res.user.email, fullName: res.user.displayName },
-              profilePicture: res.user.photoURL,
-            })
-          );
-          console.log("Sign up successful with:", {
-            fullName: res.user.displayName,
-            email: res.user.email,
-            password: res.user.uid,
-            rememberMe,
-            result,
-          });
-          navigate("/");
+          // dispatch(
+          //   setCredentials({
+          //     access: result.access,
+          //     refresh: result.refresh,
+          //     user: { email: res.user.email, fullName: res.user.displayName },
+          //     profilePicture: res.user.photoURL,
+          //   })
+          // );
+
+          navigate("/login");
         } catch (error) {
           const errorMsg =
             error?.data?.message ||
@@ -235,7 +217,7 @@ export default function SignUp() {
               </div>
             </div>
 
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <input
                 type="checkbox"
                 checked={rememberMe}
@@ -245,7 +227,7 @@ export default function SignUp() {
               <span className="ml-2 text-gray-600 text-sm sm:text-base">
                 Remember me
               </span>
-            </div>
+            </div> */}
 
             <button
               type="submit"
