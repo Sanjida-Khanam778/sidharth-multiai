@@ -8,7 +8,6 @@ export default function Sidebar() {
   // Fetch chat sessions
   const { data: sessionsData, isLoading: sessionsLoading } =
     useGetChatSessionsQuery();
-  console.log(sessionsData);
 
   // Function to organize sessions by date
   const organizeSessionsByDate = (sessions) => {

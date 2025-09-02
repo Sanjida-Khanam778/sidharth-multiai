@@ -4,14 +4,12 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   selectIsAuthenticated,
-  selectUser,
   logout,
 } from "../../Stores/authSlice";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isAuthenticated = useSelector(selectIsAuthenticated);
-  const user = useSelector(selectUser);
   const dispatch = useDispatch();
 
   const toggleMobileMenu = () => {
@@ -64,9 +62,9 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center space-x-3 xl:space-x-4">
             {isAuthenticated ? (
               <>
-                <span className="text-gray-700 text-sm xl:text-base">
+                {/* <span className="text-gray-700 text-sm xl:text-base">
                   Welcome, {user?.fullName || user?.email}
-                </span>
+                </span> */}
                 <button
                   onClick={handleLogout}
                   className="bg-red-500 text-white px-4 xl:px-6 py-2 rounded-lg font-semibold transition-colors duration-200 shadow-sm text-sm xl:text-base hover:bg-red-600"
@@ -149,9 +147,9 @@ const Navbar = () => {
               <div className="pt-4 pb-2 space-y-3">
                 {isAuthenticated ? (
                   <>
-                    <div className="px-3 py-2 text-gray-700 text-sm">
+                    {/* <div className="px-3 py-2 text-gray-700 text-sm">
                       Welcome, {user?.fullName || user?.email}
-                    </div>
+                    </div> */}
                     <button
                       onClick={handleLogout}
                       className="w-full bg-red-500 text-white px-3 py-2 rounded-lg font-semibold transition-colors duration-200 shadow-sm text-base"

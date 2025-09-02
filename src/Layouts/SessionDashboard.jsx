@@ -28,7 +28,6 @@ export default function SessionDashboard() {
   // Get sessions query to trigger refetch
   const { refetch: refetchSessions } = useGetChatSessionsQuery();
 
-  console.log("messagesData", messagesData?.sessions);
 
   const [chatMessages, setChatMessages] = useState([]);
 
@@ -157,7 +156,6 @@ export default function SessionDashboard() {
         // Also refetch sessions to update sidebar
         refetchSessions();
       } catch (err) {
-        console.error("Failed to send message:", err);
         // Remove the optimistic user message if there was an error
         setChatMessages((prev) =>
           prev.filter(

@@ -25,7 +25,6 @@ const Nav = () => {
   const profilePictureFromRedux = useSelector(selectProfilePicture);
   const userFromRedux = useSelector(selectUser);
   const fullNameFromRedux = useSelector(selectFullName);
-  console.log("Full Name from Redux:", fullNameFromRedux);
   const [profilePic, setProfilePic] = useState(
     profilePictureFromRedux || profile
   );
@@ -71,7 +70,6 @@ const Nav = () => {
 
   // Update fullName when user profile data changes
   useEffect(() => {
-    console.log("User Profile Data:", userProfileData);
     if (userProfileData?.full_name) {
       setFullName(userProfileData.full_name);
     } else {
@@ -117,7 +115,6 @@ const Nav = () => {
       toast.success("Profile Updated Successfully");
       setIsModalOpen(false);
     } catch (error) {
-      console.error("Profile update failed:", error);
       const errorMsg = error?.data?.message || "Failed to update profile";
       toast.error(errorMsg);
     }

@@ -31,7 +31,6 @@ export default function SignUp() {
         password,
       }).unwrap();
       toast.success(result.message || "Registration successful!");
-      console.log(result);
       navigate("/login");
     } catch (error) {
       const errorMsg =
@@ -47,7 +46,6 @@ export default function SignUp() {
   const handleSocialLogin = () => {
     handleGoogleLogin()
       .then(async (res) => {
-        console.log(res);
         try {
           const result = await register({
             full_name: res.user.displayName,
@@ -73,7 +71,6 @@ export default function SignUp() {
         }
       })
       .catch((err) => {
-        console.error(err.message);
         toast.error("Google login failed. Please try again.");
       });
   };

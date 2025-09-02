@@ -20,8 +20,8 @@ export default function Banner() {
               Smarter Biomedical Research with AI
             </h1>
             <p className="text-base sm:text-lg md:text-2xl max-w-2xl mt-6 text-center md:text-left">
-              Ask a research question and compare answers from ChatGPT, Copilot,
-              and more - with sources.
+              Ask a research question and compare answers from Claude, ChatGPT,
+              Gemini, DeepSeek, xAI and more - with sources.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 mt-10 w-full justify-center md:justify-start">

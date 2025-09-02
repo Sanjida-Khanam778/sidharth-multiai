@@ -76,7 +76,6 @@ export default function Dashboard() {
       try {
         // For new chat, only send input_text
         const data = await chat({ input_text: userMessage }).unwrap();
-        console.log(data)
         // Navigate to the session page with the session_id from response
         if (data.session_id) {
           // Refetch sessions to update sidebar

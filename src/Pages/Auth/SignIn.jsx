@@ -30,12 +30,7 @@ export default function SignIn() {
           user: { email },
         })
       );
-      console.log("Sign in successful with:", {
-        email,
-        password,
-        rememberMe,
-        result,
-      });
+     
       navigate("/");
     } catch (error) {
       const errorMsg =
@@ -49,7 +44,6 @@ export default function SignIn() {
   };
   const handleSocialLogin = () => {
     handleGoogleLogin().then(async (res) => {
-      console.log(res);
       try {
         const result = await login({
           username: res.user.email,
@@ -63,13 +57,7 @@ export default function SignIn() {
             profilePicture: res.user.photoURL,
           })
         );
-        console.log("Sign in successful with:", {
-          email: res.user.email,
-          fullName: res.user.displayName,
-          password: res.user.uid,
-          rememberMe,
-          result,
-        });
+      
         navigate("/");
       } catch (error) {
         const errorMsg =
@@ -189,7 +177,7 @@ export default function SignIn() {
 
             {/* Remember Me & Forgot Password */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 <input
                   id="remember-me"
                   type="checkbox"
@@ -203,7 +191,7 @@ export default function SignIn() {
                 >
                   Remember me
                 </label>
-              </div>
+              </div> */}
               <Link
                 to="/forget-password"
                 className="text-primary hover:underline text-sm sm:text-base"
