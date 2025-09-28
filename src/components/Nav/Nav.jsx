@@ -142,7 +142,7 @@ const Nav = () => {
           {/* Logo */}
           <Link to="/">
             <div className="flex items-center">
-              <img src={logo} alt="logo" className="w-32 md:w-48" />
+              <img src={logo} alt="logo" className="w-32 md:w-40" />
             </div>
           </Link>
           <div
