@@ -16,7 +16,7 @@ export default function ResetPass() {
   const navigate = useNavigate();
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
   const email = location.state?.email || "";
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email) {
@@ -40,13 +40,6 @@ export default function ResetPass() {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row font-manrope">
-      {/* Logo - Mobile */}
-      <Link to="/" className="absolute top-4 left-4">
-        <div className="p-4 lg:p-8">
-          <img src={logo} alt="logo" className="w-24 sm:w-32 md:w-40 lg:w-48" />
-        </div>
-      </Link>
-
       {/* Robot Image - Mobile (below navbar) */}
       <div className="lg:hidden bg-gradient-to-br from-primary to-primary h-64 sm:h-80 flex items-center justify-center relative overflow-hidden">
         <div className="h-80 sm:h-96">
@@ -59,7 +52,13 @@ export default function ResetPass() {
       </div>
 
       {/* Left Side - Reset Password Form */}
-      <div className="flex-1 lg:w-1/2 bg-white p-4 sm:p-6 lg:p-8 flex flex-col justify-center">
+      <div className="flex-1 lg:w-1/2 bg-white p-4 sm:p-6 lg:p-8 flex flex-col justify-center items-center">
+        {/* Logo - Mobile */}
+        <Link to="/" className="">
+          <div className="p-4 lg:p-8">
+            <img src={logo} alt="logo" className="w-24 md:w-40" />
+          </div>
+        </Link>
         <div className="w-full max-w-md mx-auto">
           <div className="mb-6 lg:mb-8">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">

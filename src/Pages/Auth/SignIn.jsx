@@ -72,13 +72,7 @@ export default function SignIn() {
   };
   return (
     <div className="min-h-screen flex flex-col lg:flex-row font-manrope">
-      {/* Logo - Mobile */}
-      <Link to="/" className="absolute top-4 left-4">
-        <div className="p-4 lg:p-8">
-          <img src={logo} alt="logo" className="w-24 sm:w-32 md:w-40 lg:w-48" />
-        </div>
-      </Link>
-
+      
       {/* Robot Image - Mobile (below navbar) */}
       <div className="lg:hidden bg-gradient-to-br from-blue-400 to-primary h-64 sm:h-80 flex items-center justify-center relative overflow-hidden">
         <div className="h-80 sm:h-96">
@@ -91,7 +85,13 @@ export default function SignIn() {
       </div>
 
       {/* Left Side - Sign In Form */}
-      <div className="flex-1 lg:w-1/2 bg-white p-4 sm:p-6 my-10 md:my-0 justify-center flex flex-col">
+      <div className="flex-1 lg:w-1/2 bg-white p-4 sm:p-6 my-10 md:my-0 justify-center flex flex-col items-center">
+        {/* Logo - Mobile */}
+              <Link to="/" className="">
+                <div className="p-4 lg:p-8">
+                  <img src={logo} alt="logo" className="w-24 md:w-40" />
+                </div>
+              </Link>
         <div className="w-full max-w-md mx-auto">
           {/* Sign In Header */}
           <div className="mb-6 xl:mb-8">

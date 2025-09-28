@@ -1,16 +1,14 @@
 import { Link } from "react-router-dom";
-
+import logo from "../../assets/images/logo.png";
 const Footer = () => {
   return (
-    <footer className="bg-primary text-white">
+    <footer className="bg-primary/20 text-black">
       <div className="">
         <div className="w-10/12 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 py-12">
           {/* Company Info */}
           <div className="lg:col-span-2">
-            <h3 className="text-xl md:text-3xl lg:text-4xl font-bold mb-4 text-center lg:text-left">
-              CurieCell AI Engine
-            </h3>
-            <p className="text-blue-100 leading-relaxed tracking-wider text-center lg:text-left">
+            <img src={logo} className="w-40 mb-6" alt="" />
+            <p className="text-black leading-relaxed tracking-wider text-center lg:text-left">
               BioQuery AI is a smart research tool that delivers side-by-side
               answers from multiple AI engines for biomedical questions, with
               citations and visual support.
@@ -24,7 +22,7 @@ const Footer = () => {
               <li>
                 <a
                   href="#"
-                  className="text-blue-100 hover:text-white transition-colors"
+                  className="text-black hover:text-white transition-colors"
                 >
                   Home
                 </a>
@@ -32,7 +30,7 @@ const Footer = () => {
               <li>
                 <a
                   href="#features"
-                  className="text-blue-100 hover:text-white transition-colors"
+                  className="text-black hover:text-white transition-colors"
                 >
                   Features
                 </a>
@@ -40,7 +38,7 @@ const Footer = () => {
               <li>
                 <a
                   href="#about"
-                  className="text-blue-100 hover:text-white transition-colors"
+                  className="text-black hover:text-white transition-colors"
                 >
                   About
                 </a>
@@ -54,7 +52,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <Link to={'/register'}>
                 <li>
-                  <div className="text-blue-100 hover:text-white transition-colors">
+                  <div className="text-black hover:text-white transition-colors">
                     Register/SignUp
                   </div>
                 </li>
@@ -95,7 +93,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-white border-opacity-40 py-4 text-center">
-          <p className="text-blue-100">
+          <p className="text-black">
             © 2025 CurieCell by Regios. All rights reserved.
           </p>
         </div>
