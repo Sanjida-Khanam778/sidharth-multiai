@@ -7,8 +7,8 @@ const Footer = () => {
         <div className="w-10/12 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 py-12">
           {/* Company Info */}
           <div className="lg:col-span-2">
-            <img src={logo} className="w-40 mb-6" alt="" />
-            <p className="text-black leading-relaxed tracking-wider text-center lg:text-left">
+            <img src={logo} className="w-32 md:w-40 mb-6 mx-auto" alt="" />
+            <p className="text-black leading-relaxed tracking-wider text-center">
               BioQuery AI is a smart research tool that delivers side-by-side
               answers from multiple AI engines for biomedical questions, with
               citations and visual support.
