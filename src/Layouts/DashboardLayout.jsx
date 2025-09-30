@@ -10,7 +10,7 @@ export default function DashboardLayout() {
   return (
     <div>
       <Nav />
-      <div className="flex h-[89vh] bg-gray-50 relative">
+      <div className="flex h-[calc(100vh-96px)] bg-gray-50 relative">
         {/* Static Sidebar */}
         <div className="hidden lg:block lg:relative lg:z-0 h-full border">
           <Sidebar />

@@ -105,7 +105,7 @@ export default function Sidebar() {
       <div className="p-4">
         <button
           onClick={handleNewChat}
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+          className="w-full bg-primary text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors"
         >
           <span className="text-lg">+</span>
           <span>New Chat</span>

@@ -136,9 +136,9 @@ const Nav = () => {
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-100 py-3 sticky top-0 z-50">
-      <div className="w-11/12 mx-auto">
-        <div className="flex justify-between items-center">
+    <nav className="bg-white shadow-sm border-b border-gray-100 h-24 sticky top-0 z-50">
+      <div className="w-11/12 mx-auto my-auto h-full">
+        <div className="flex justify-between items-center my-auto h-full">
           {/* Logo */}
           <Link to="/">
             <div className="flex items-center">
