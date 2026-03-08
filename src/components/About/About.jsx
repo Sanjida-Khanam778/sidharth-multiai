@@ -6,8 +6,7 @@ const About = () => {
           {/* Left Column - Headline */}
           <div>
             <h1 className="text-4xl md:text-4xl lg:text-5xl font-bold text-gray-900 md:leading-relaxed tracking-wide">
-              The World's Most Comprehensive AI <br /> insights for Research{" "}
-              <br /> and Development
+            Multi-engine AI <br /> research and  validation platform
             </h1>
           </div>
 
